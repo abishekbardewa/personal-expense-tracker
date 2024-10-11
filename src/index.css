@@ -1,3 +1,240 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='number'],
+input[type='tel'],
+input[type='datetime-local'],
+input[type='time'],
+select,
+textarea {
+	-moz-appearance: textfield;
+	appearance: textfield;
+	@apply w-full border border-gray-300 my-1 py-2 px-3 rounded-md;
+}
+
+.swiper-button-next {
+	@apply text-white p-2 rounded;
+}
+
+.swiper-button-prev {
+	@apply text-white p-2 rounded;
+}
+
+textarea {
+	height: 140px;
+}
+
+button {
+	@apply bg-gray-300;
+}
+
+button.primary {
+	background-color: #f5385d;
+	@apply bg-primary py-2 px-3 w-full text-white rounded-md;
+}
+
+html,
+body,
+:root {
+	height: 100%;
+}
+
+.loading-icon {
+	/* color: teal;
+  font-size: 2rem; */
+	animation: animate 2s infinite;
+}
+
+@keyframes animate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(720deg);
+	}
+}
+
+.bg-gradient {
+	/* background: rgb(2, 0, 36);
+	background: linear-gradient(51deg, rgba(2, 0, 36, 1) 0%, rgba(85, 103, 147, 1) 100%); */
+	background: rgb(2, 0, 36);
+	background: linear-gradient(51deg, #8c4370 0%, rgba(85, 103, 147, 1) 100%);
+
+	/* background: #b4457f;
+	background: -webkit-linear-gradient(51deg, #8c4370 0%, #b4457f 100%);
+	background: linear-gradient(51deg, #8c4370 0%, #b4457f 100%); */
+}
+
+.rdrMonth {
+	width: 100% !important;
+}
+
+.rdrCalendarWrapper {
+	font-size: 16px !important;
+	width: 100% !important;
+}
+
+.disable-scroll {
+	overflow: hidden;
+}
+
+.custom-marker {
+	position: relative;
+	color: white;
+	padding: 10px;
+	border-radius: 5px;
+	font-weight: bold;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	transform: translate(-50%, -100%);
+	cursor: pointer;
+	transition: transform 0.2s, background-color 0.3s;
+}
+
+.custom-marker.active {
+	background-color: #ff5a5f;
+	/* Airbnb-like red for properties in the selected city */
+}
+
+.custom-marker.nearby {
+	background-color: #00a699;
+	/* Airbnb-like teal for nearby properties */
+}
+
+.custom-marker:hover {
+	transform: translate(-50%, -110%) scale(1.05);
+}
+
+.marker-price {
+	font-size: 14px;
+}
+
+.marker-arrow {
+	position: absolute;
+	bottom: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+}
+
+.custom-marker.active .marker-arrow {
+	border-top: 10px solid #ff5a5f;
+}
+
+.custom-marker.nearby .marker-arrow {
+	border-top: 10px solid #00a699;
+}
+
+.map-container {
+	padding: 0 20px;
+}
+
+@media (min-width: 1024px) {
+	.map-container {
+		padding: 0 64px;
+	}
+}
+
+.slick-slide {
+	height: auto;
+}
+
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+	width: 6px;
+	/* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+	background-color: #f1f1f1;
+	/* Color of the track area */
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #d75a9a;
+	/* Color of the scrollbar thumb */
+	border-radius: 6px;
+	/* Rounded corners of the scrollbar thumb */
+}
+
+/* Color of the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+	background-color: #555;
+}
+/* .slick-slide > div {
+	margin: 0 10px;
+}
+.slick-list {
+	margin: 0 -10px;
+} */
+
+.slick-list {
+	padding: 0 20% 0 0 !important;
+}
+
+@media (max-width: 900px) {
+	.slick-list {
+		padding: 0 0 0 0 !important;
+	}
+}
+
+.infinite-scroll-component::-webkit-scrollbar {
+	display: none;
+}
+
+/* For IE, Edge, and Firefox */
+.infinite-scroll-component {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+.property-card {
+	transform: translateY(0);
+	transition: 0.2s ease-in-out, background-color 0.2s ease-in-out, transform 0.2s ease-in;
+}
+.property-card:hover {
+	transform: translateY(-0.5vw);
+	transition: 0.2s ease-in-out, background-color 0.2s ease-in-out, transform 0.2s ease-in;
+	@apply shadow-md;
+}
+
+@keyframes bounce {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-8px);
+	}
+}
+
+.loader-dots {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+}
+
+.loader-dots div {
+	width: 8px;
+	height: 8px;
+	background-color: #333;
+	border-radius: 50%;
+	animation: bounce 0.6s infinite;
+}
+
+.loader-dots div:nth-child(1) {
+	animation-delay: 0s;
+}
+.loader-dots div:nth-child(2) {
+	animation-delay: 0.2s;
+}
+.loader-dots div:nth-child(3) {
+	animation-delay: 0.4s;
+}

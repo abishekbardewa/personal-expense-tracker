@@ -6,9 +6,14 @@ import IntroPage from '../pages/IntroPage';
 export const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Layout />,
-		children: [{ path: '', element: <IntroPage /> }],
+		element: <IntroPage />,
+		// children: [{ path: '', element: <IntroPage /> }],
 	},
+	// {
+	// 	path: '/',
+	// 	element: <Layout />,
+	// 	children: [{ path: '', element: <IntroPage /> }],
+	// },
 
 	{
 		path: '*',
