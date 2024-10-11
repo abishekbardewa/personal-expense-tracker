@@ -1,13 +1,13 @@
-import { useState } from 'react';
-
-import './App.css';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes/router';
 
 function App() {
-	return (
-		<>
-			<h1>App component</h1>
-		</>
-	);
+	// const loading = useCurrentUser();
+	// if (loading) {
+	// 	return <Loader />;
+	// }
+
+	return <RouterProvider router={router} />;
 }
 
 export default App;
