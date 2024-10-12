@@ -6,9 +6,8 @@ import { selectIsAuthenticated } from '../redux/slices/authSlice';
 
 const PrivateRoute = ({ children }) => {
 	const isAuthenticated = useSelector(selectIsAuthenticated);
-	const isAuthorized = isAuthenticated;
 
-	return isAuthorized ? children : <Navigate to="/" replace />;
+	return isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;

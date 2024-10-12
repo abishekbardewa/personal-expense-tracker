@@ -7,7 +7,7 @@ export const axiosInstance = axios.create({
 	// withCredentials: true,
 	headers: {
 		'Access-Control-Allow-Origin': '*',
-		'Content-Type': 'application/json', //this line solved cors
+		'Content-Type': 'application/json',
 	},
 });
 
@@ -15,7 +15,7 @@ export const axiosPrivate = axios.create({
 	baseURL: API_URL,
 	headers: {
 		'Access-Control-Allow-Origin': '*',
-		'Content-Type': 'application/json', //this line solved cors
+		'Content-Type': 'application/json',
 	},
 	// withCredentials: true,
 });

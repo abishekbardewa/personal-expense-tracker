@@ -17,9 +17,9 @@ interface LoginModalProps {
 const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegisterSuccess }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState(false);
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState<boolean>(false);
+	const [email, setEmail] = useState<string>('test@test.com');
+	const [password, setPassword] = useState<string>('D@dcl1234');
 	const [error, setError] = useState<{ email?: string; password?: string }>({});
 
 	const handleLogin = async () => {
@@ -47,6 +47,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 		try {
 			const { data } = await loginUser(email, password);
 			if (data.result) {
+				console.log('data', data);
 				dispatch(setUser(data.data.user));
 				localStorage.setItem('token', data.data.accessToken);
 				localStorage.setItem('user', JSON.stringify(data.data.user));

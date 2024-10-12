@@ -8,10 +8,9 @@ export const validateEmail = (email: string) => {
 	return emailRegex.test(email);
 };
 
-// Validate password (e.g., at least 6 characters)
 export const validatePassword = (password: string) => {
-	return password.length >= 6; // Adjust as per your requirement
+	return password.length >= 6;
 };
 export const validateText = (text: string) => {
-	return !text.length; // Adjust as per your requirement
+	return !text.length;
 };

@@ -1,4 +1,4 @@
-import { axiosInstance } from './axios.service';
+import { axiosInstance, axiosPrivate } from './axios.service';
 
 export const loginUser = async (email: string, password: string) => {
 	try {
@@ -14,5 +14,14 @@ export const registerUser = async (name: string, email: string, password: string
 		return response;
 	} catch (error) {
 		throw new Error('Signup API failed');
+	}
+};
+
+export const addCustomCategory = async (data: any) => {
+	try {
+		const response = await axiosPrivate.post('auth/add-custom-category', data);
+		return response;
+	} catch (error) {
+		throw new Error('Add Category API failed');
 	}
 };

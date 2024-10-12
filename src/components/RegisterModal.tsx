@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { axiosInstance } from '../services/axios.service';
 import { registerUser } from '../services/auth.service';
 import { toast } from 'react-toastify';
 import Button from './common/Button';
