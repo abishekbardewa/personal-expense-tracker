@@ -25,7 +25,7 @@ export default {
 				square: 'square',
 			},
 			colors: {
-				primary: '#514D73',
+				primary: '#FD6F41',
 				theame: '#8c4370',
 				main: {
 					25: '#f2f3f7',

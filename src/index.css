@@ -8,6 +8,7 @@ input[type='number'],
 input[type='tel'],
 input[type='datetime-local'],
 input[type='time'],
+input[type='date'],
 select,
 textarea {
 	-moz-appearance: textfield;
@@ -59,14 +60,7 @@ body,
 }
 
 .bg-gradient {
-	/* background: rgb(2, 0, 36);
-	background: linear-gradient(51deg, rgba(2, 0, 36, 1) 0%, rgba(85, 103, 147, 1) 100%); */
-	background: rgb(2, 0, 36);
-	background: linear-gradient(51deg, #8c4370 0%, rgba(85, 103, 147, 1) 100%);
-
-	/* background: #b4457f;
-	background: -webkit-linear-gradient(51deg, #8c4370 0%, #b4457f 100%);
-	background: linear-gradient(51deg, #8c4370 0%, #b4457f 100%); */
+	background: #ecf1f4;
 }
 
 .rdrMonth {
@@ -152,12 +146,12 @@ body,
 }
 
 ::-webkit-scrollbar-track {
-	background-color: #f1f1f1;
+	/* background-color: #f1f1f1; */
 	/* Color of the track area */
 }
 
 ::-webkit-scrollbar-thumb {
-	background-color: #d75a9a;
+	/* background-color: #d75a9a; */
 	/* Color of the scrollbar thumb */
 	border-radius: 6px;
 	/* Rounded corners of the scrollbar thumb */
@@ -237,4 +231,19 @@ body,
 }
 .loader-dots div:nth-child(3) {
 	animation-delay: 0.4s;
+}
+
+/* Hide scrollbar for WebKit browsers */
+.scrollbar-hidden::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hidden {
+	scrollbar-width: none; /* For Firefox */
+}
+
+/* Hide scrollbar for Internet Explorer and Edge */
+.scrollbar-hidden {
+	-ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
