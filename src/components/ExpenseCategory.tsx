@@ -5,13 +5,15 @@ import { FaPlus } from 'react-icons/fa6';
 import AddCategoryModal from './AddCategoryModal';
 import AddExpenseModal from './AddExpenseModal';
 import { useExpenseContext } from './context/ExpenseProvider';
+import ConfirmModal from './common/ConfirmModal';
+import { MdOutlineCancel } from 'react-icons/md';
 
 const ExpenseCategory: React.FC = () => {
-	const { categories } = useExpenseContext();
+	const { loading, categories, handleDeleteCategory } = useExpenseContext();
 	const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
+	const [showModal, setShowModal] = useState(false);
 	const openModal = (category) => {
 		setSelectedCategory(category);
 		setIsModalOpen(true);
@@ -19,6 +21,15 @@ const ExpenseCategory: React.FC = () => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		setSelectedCategory(null);
+	};
+	const handleDelete = (category) => {
+		setSelectedCategory(category.name);
+		setShowModal(true);
+	};
+	const handleConfirm = async () => {
+		await handleDeleteCategory({ categoryName: selectedCategory });
+		setShowModal(false);
 		setSelectedCategory(null);
 	};
 
@@ -36,16 +47,14 @@ const ExpenseCategory: React.FC = () => {
 						<div className="flex shrink-0 items-center gap-x-4">
 							<p className="text-sm leading-6 text-gray-900">Rs.{data.totalAmount}</p>
 							<CategoryButton onClick={() => openModal(data.category)} />
-							<Button
-								buttonType="button"
-								size="md"
-								variant="filled"
-								innerClass="w-50 bg-white !py-[4px] !px-[10px]"
-								innerTextClass="text-primary"
-								onClick={() => setShowCategoryModal(true)}
+
+							<div
+								role="button"
+								className="relative border flex items-end rounded-full px-3 py-1 text-sm font-medium bg-white text-primary"
+								onClick={() => handleDelete(data.category)}
 							>
-								Delete
-							</Button>
+								<div className="flex flex-col items-center">Delete</div>
+							</div>
 						</div>
 					</li>
 				))}
@@ -65,6 +74,22 @@ const ExpenseCategory: React.FC = () => {
 			</ul>
 			{showCategoryModal && <AddCategoryModal onClose={() => setShowCategoryModal(false)} />}
 			{isModalOpen && <AddExpenseModal category={selectedCategory} closeModal={closeModal} />}
+
+			{showModal && (
+				<ConfirmModal
+					modalId="delete-action-modal"
+					title="Confirm Expense Category Deletion"
+					message={`Deleting ${selectedCategory} category will remove all associated expenses. This action cannot be undone.`}
+					confirmText={'Yes, Delete'}
+					cancelText="No, Keep Category"
+					onConfirm={handleConfirm}
+					onCancel={() => setShowModal(false)}
+					confirmDisabled={loading}
+					cancelDisabled={loading}
+					btnClass={'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'}
+					icon={<MdOutlineCancel className="w-10 h-10 text-error-600" />}
+				/>
+			)}
 		</div>
 	);
 };

@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
-	addCategory,
 	addExpense,
-	deleteCategory,
 	deleteExpense,
 	editExpense,
 	getCategories,
@@ -11,6 +9,7 @@ import {
 	getExpenses,
 } from '../../services/expense.service';
 import { toast } from 'react-toastify';
+import { addCategory, deleteCategory } from '../../services/category.service';
 
 const ExpenseContext = createContext(null);
 
@@ -101,12 +100,14 @@ export const ExpenseProvider: React.FC = ({ children }) => {
 		}
 	};
 
-	const handleDeleteCategory = async (categoryId) => {
+	const handleDeleteCategory = async (categoryData) => {
 		setLoading(true);
 		try {
-			await deleteCategory(categoryId);
+			await deleteCategory(categoryData);
+			toast.success('Category deleted successfully');
 			fetchExpenses();
 			fetchCurrentMonthlChart();
+			fetchCurrentMonthlInsights();
 		} catch (error) {
 			toast.error('Failed to delete category');
 		} finally {
