@@ -8,7 +8,7 @@ const doc = {
 		title: 'FinTrack Backend API',
 		description: 'API documentation for FinTrack Backend',
 	},
-	// host: ``,
+	host: 'https://fin-track-snowy-ten.vercel.app',
 	basePath: config.apiVersionUrl || '/', // Ensure basePath is set correctly
 	schemes: ['https', 'http'], // Add 'https' if needed
 	consumes: ['application/json', 'form-data', 'multipart/form-data'],
