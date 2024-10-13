@@ -8,17 +8,17 @@ const doc = {
 		title: 'FinTrack Backend API',
 		description: 'API documentation for FinTrack Backend',
 	},
-	host: 'https://fin-track-snowy-ten.vercel.app',
+	host: 'https://personal-expense-tracker-zqw8.onrender.com',
 	basePath: config.apiVersionUrl || '/', // Ensure basePath is set correctly
 	schemes: ['https', 'http'], // Add 'https' if needed
 	consumes: ['application/json', 'form-data', 'multipart/form-data'],
 	produces: ['application/json'],
-	// tags: [
-	// 	{ name: 'Auth', description: 'Endpoints related to authentication' },
-	// 	{ name: 'Category', description: 'Endpoints related to category' },
-	// 	{ name: 'Expense', description: 'Endpoints related to expense' },
-	// 	// Add more tags for other groups as needed
-	// ],
+	tags: [
+		{ name: 'Auth', description: 'Endpoints related to authentication' },
+		{ name: 'Category', description: 'Endpoints related to category' },
+		{ name: 'Expense', description: 'Endpoints related to expense' },
+		// 	// Add more tags for other groups as needed
+	],
 	securityDefinitions: {
 		BearerAuth: {
 			// Definition for JWT authorization
