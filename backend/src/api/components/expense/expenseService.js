@@ -85,8 +85,6 @@ const getYearlyMonthlyChart = async (userId, year, month) => {
 		const startDate = new Date(Date.UTC(year, month - 1, 1)); // Start of the month in UTC
 		const endDate = new Date(Date.UTC(year, month, 1)); // Start of the next month in UTC
 
-		console.log('Start Date:', startDate.toISOString(), 'End Date:', endDate.toISOString());
-
 		const result = await Expense.aggregate([
 			{
 				$match: { userId: new mongoose.Types.ObjectId(userId), date: { $gte: startDate, $lt: endDate } },
