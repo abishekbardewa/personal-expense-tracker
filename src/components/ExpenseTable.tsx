@@ -5,6 +5,7 @@ import { useState } from 'react';
 import ConfirmModal from './common/ConfirmModal';
 import { MdOutlineCancel } from 'react-icons/md';
 import EditExpenseModal from './EditExpenseModal';
+import { formatDate } from '../utils';
 
 const ExpenseTable: React.FC = () => {
 	const { loading, expenses, handleDeleteExpense } = useExpenseContext();
@@ -30,7 +31,7 @@ const ExpenseTable: React.FC = () => {
 	return (
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Expense Entries</h2>
-			<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8  bg-white rounded-[16px] h-96 md:h-[500px] overflow-y-auto overflow-x-auto">
+			<div className="min-w-full py-2 align-middle sm:px-6 lg:px-8  bg-white rounded-[16px]  md:h-[500px] overflow-y-auto overflow-x-auto">
 				{expenses && expenses.length > 0 ? (
 					<table className="min-w-full divide-y divide-gray-300">
 						<thead>
@@ -56,7 +57,7 @@ const ExpenseTable: React.FC = () => {
 										{expense.category}
 										{expense.description && <p className="mt-1 truncate text-xs leading-5 text-gray-500">{expense.description}</p>}
 									</td>
-									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{new Date(expense.date).toLocaleDateString()}</td>
+									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatDate(expense.date)}</td>
 									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Rs.{expense.amount}</td>
 
 									<td className="whitespace-nowrap  px-3 py-5 text-right text-sm font-medium sm:pr-0 ">

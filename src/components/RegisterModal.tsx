@@ -33,7 +33,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 		if (!password) {
 			newError.password = 'Password is required';
 		} else if (!validatePassword(password)) {
-			newError.password = 'Password must be at least 6 characters';
+			newError.password =
+				'Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character';
 		}
 
 		if (Object.keys(newError).length > 0) {

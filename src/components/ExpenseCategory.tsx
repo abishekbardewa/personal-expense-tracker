@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CategoryButton from './common/CategoryButton';
 import Button from './common/Button';
-import { FaPlus } from 'react-icons/fa6';
+import { FaPlus, FaTrash } from 'react-icons/fa6';
 import AddCategoryModal from './AddCategoryModal';
 import AddExpenseModal from './AddExpenseModal';
 import { useExpenseContext } from './context/ExpenseProvider';
@@ -60,14 +60,16 @@ const ExpenseCategory: React.FC = () => {
 						<div className="flex shrink-0 items-center gap-x-4">
 							<p className="text-sm leading-6 text-gray-900">Rs.{data.totalAmount}</p>
 							<CategoryButton onClick={() => openModal(data.category)} />
-
-							<div
+							<div role="button" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleDelete(data.category)}>
+								<FaTrash className="h-5 w-5 text-red-600" />
+							</div>
+							{/* <div
 								role="button"
 								className="relative border flex items-end rounded-full px-3 py-1 text-sm font-medium bg-white text-primary"
 								onClick={() => handleDelete(data.category)}
 							>
 								<div className="flex flex-col items-center">Delete</div>
-							</div>
+							</div> */}
 						</div>
 					</li>
 				))}
