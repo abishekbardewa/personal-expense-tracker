@@ -22,8 +22,17 @@ export const validateText = (text: string) => {
 
 export const formatDate = (dateString: any) => {
 	const date = new Date(dateString);
-	const options = { day: '2-digit', month: 'short', year: '2-digit' };
+
+	// Define options with correct types
+	const options: Intl.DateTimeFormatOptions = {
+		day: '2-digit', // Should be '2-digit' or 'numeric'
+		month: 'short', // Should be 'long', 'short', 'narrow', 'numeric', or '2-digit'
+		year: '2-digit', // Should be '2-digit' or 'numeric'
+	};
+
+	// Format the date
 	const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
 
-	return formattedDate.replace(/(\d{2}) (\w{3}), (\d{2})/, '$1 $2, $3');
+	// Ensure the format matches 'DD MMM, YY'
+	return formattedDate.replace(/(\d{2}) (\w{3})/, '$1 $2');
 };
