@@ -50,7 +50,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 				toast.error(err.msg);
 			}
 		} catch (error: any) {
-			toast.error(error);
+			toast.error(error.response.data.msg);
 		} finally {
 			setLoading(false);
 		}

@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
 				),
 			},
 			{
-				path: 'expense',
+				path: 'overview',
 				element: (
 					<PrivateRoute>
 						<ExpensePage />

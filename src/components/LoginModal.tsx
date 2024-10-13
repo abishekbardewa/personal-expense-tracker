@@ -18,8 +18,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
-	const [email, setEmail] = useState<string>('test@test.com');
-	const [password, setPassword] = useState<string>('D@dcl1234');
+	const [email, setEmail] = useState<string>('');
+	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState<{ email?: string; password?: string }>({});
 
 	const handleLogin = async () => {
@@ -47,18 +47,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 		try {
 			const { data } = await loginUser(email, password);
 			if (data.result) {
-				console.log('data', data);
 				dispatch(setUser(data.data.user));
 				localStorage.setItem('token', data.data.accessToken);
 				localStorage.setItem('user', JSON.stringify(data.data.user));
 				toast.success('Login successful');
 				onLoginSuccess(false);
-				navigate('/dashboard');
+				navigate('/overview');
 			} else {
 				toast.error(data.msg);
 			}
 		} catch (error: any) {
-			toast.error(error);
+			toast.error(error.response.data.msg);
 		} finally {
 			setLoading(false);
 		}

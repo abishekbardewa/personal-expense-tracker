@@ -7,9 +7,9 @@ const Insights: React.FC = () => {
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Key Insights</h2>
 			{monthlyInsights && monthlyInsights.length > 0 ? (
-				<ul role="list" className="relative  h-96 md:h-[500px] overflow-y-auto scrollbar-hidden">
-					{monthlyInsights.map((ele) => (
-						<li className="flex justify-between gap-x-6 pb-3">
+				<ul role="list" className="h-96 md:h-[500px] overflow-y-auto scrollbar-hidden">
+					{monthlyInsights.map((ele, idx) => (
+						<li key={`${ele}-${idx}`} className="flex justify-between gap-x-6 pb-3">
 							<div className="flex min-w-0 gap-x-4">
 								<div className="min-w-0 flex-auto">
 									<p className="text-sm font-semibold leading-6 text-gray-900">{ele.category}</p>

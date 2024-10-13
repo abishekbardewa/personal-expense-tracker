@@ -67,7 +67,6 @@ export const ExpenseProvider: React.FC = ({ children }) => {
 		setLoading(true);
 		try {
 			const { data: insightsResponse } = await getCurrentMonthInsights();
-			console.log(insightsResponse);
 			setMonthlyInsights(insightsResponse.data.monthlyInsights);
 			setOverallImprovement(insightsResponse.data.overallImprovement);
 			setOverallWarnings(insightsResponse.data.overallWarnings);
@@ -147,6 +146,7 @@ export const ExpenseProvider: React.FC = ({ children }) => {
 
 	const handleEditExpense = async (expenseId, updatedData) => {
 		setLoading(true);
+
 		try {
 			await editExpense(expenseId, updatedData);
 			toast.success('Expense updated successfully');

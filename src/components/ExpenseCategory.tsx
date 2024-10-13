@@ -35,7 +35,20 @@ const ExpenseCategory: React.FC = () => {
 
 	return (
 		<div>
-			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Expense Categories</h2>
+			<div className="flex justify-between items-center  mb-5">
+				<h2 className="text-2xl font-semibold leading-6 text-gray-900">Expense Categories</h2>
+				<Button
+					buttonType="button"
+					size="md"
+					variant="filled"
+					innerClass="bg-white"
+					innerTextClass="text-primary whitespace-nowrap"
+					startIcon={<FaPlus />}
+					onClick={() => setShowCategoryModal(true)}
+				>
+					New category
+				</Button>
+			</div>
 			<ul role="list" className="relative  rounded-[16px] h-96 md:h-[500px] overflow-y-auto scrollbar-hidden">
 				{categories.map((data) => (
 					<li key={data.category?._id} className="relative flex justify-between gap-x-6 p-3 hover:bg-gray-50 ">
@@ -58,7 +71,7 @@ const ExpenseCategory: React.FC = () => {
 						</div>
 					</li>
 				))}
-				<li className="sticky bottom-0 bg-gradient p-3 text-center">
+				{/* <li className="sticky bottom-0 bg-gradient p-3 text-center">
 					<Button
 						buttonType="button"
 						size="md"
@@ -70,7 +83,7 @@ const ExpenseCategory: React.FC = () => {
 					>
 						Add new category
 					</Button>
-				</li>
+				</li> */}
 			</ul>
 			{showCategoryModal && <AddCategoryModal onClose={() => setShowCategoryModal(false)} />}
 			{isModalOpen && <AddExpenseModal category={selectedCategory} closeModal={closeModal} />}
@@ -78,8 +91,8 @@ const ExpenseCategory: React.FC = () => {
 			{showModal && (
 				<ConfirmModal
 					modalId="delete-action-modal"
-					title="Confirm Expense Category Deletion"
-					message={`Deleting ${selectedCategory} category will remove all associated expenses. This action cannot be undone.`}
+					title={`Confirm ${selectedCategory} Category Deletion`}
+					message={`Deleting this category will remove all associated expenses. This action cannot be undone.`}
 					confirmText={'Yes, Delete'}
 					cancelText="No, Keep Category"
 					onConfirm={handleConfirm}
