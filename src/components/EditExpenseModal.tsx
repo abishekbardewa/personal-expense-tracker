@@ -39,8 +39,8 @@ const EditExpenseModal: React.FC<any> = ({ category, closeModal }: any) => {
 		}
 
 		const reqObj = { amount, date: formatDateToUTC(date), description };
-		console.log(reqObj, category._id);
 		await handleEditExpense(category._id, reqObj);
+		closeModal();
 	};
 
 	return (
@@ -82,7 +82,7 @@ const EditExpenseModal: React.FC<any> = ({ category, closeModal }: any) => {
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 					<div className="flex flex-1 w-100 items-center justify-start gap-4">
-						<Button buttonType="submit" disabled={loading} size="sm" variant="filled" innerClass="w-full bg-blue-500 text-white">
+						<Button buttonType="submit" disabled={loading} loading={loading} size="sm" variant="filled" innerClass="w-full border-primary text-white">
 							Edit expense
 						</Button>
 						<Button buttonType="button" size="sm" variant="outline" innerClass="w-full  text-red-500" disabled={loading} onClick={closeModal}>

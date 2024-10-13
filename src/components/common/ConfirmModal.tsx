@@ -67,9 +67,9 @@ const ConfirmModal: React.FC<any> = ({
 					</button>
 					<div className="p-4 md:p-5 text-center">
 						<div className="flex items-center justify-center mb-5">{icon}</div>
-						<h3 className="mb-5 text-lg font-normal text-gray-500">{title}</h3>
-						{subtitle && <p className="mb-5 text-gray-700">{subtitle}</p>}
-						<p className="mb-5 text-gray-700">{message}</p>
+						<h3 className="mb-2 text-md font-normal text-gray-500">{title}</h3>
+						{subtitle && <p className="mb-5 text-sm font-normal text-gray-700">{subtitle}</p>}
+						<p className="mb-5 text-sm text-gray-700">{message}</p>
 						{isBtn && (
 							<div className="flex flex-col md:flex-row gap-3 md:gap-0  justify-center items-center">
 								<button

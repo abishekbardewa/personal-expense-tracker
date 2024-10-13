@@ -27,7 +27,6 @@ const AddCategoryModal: React.FC<any> = ({ onClose }) => {
 		}
 
 		await handleAddCategory({ categoryName: newCategory });
-
 		setNewCategory('');
 		onClose();
 	};
@@ -49,7 +48,7 @@ const AddCategoryModal: React.FC<any> = ({ onClose }) => {
 						onChange={handleCategoryChange}
 					/>
 					<div className="flex flex-1 w-100 items-center justify-start gap-4">
-						<Button buttonType="submit" size="sm" variant="filled" innerClass="w-full bg-blue-500 text-white">
+						<Button buttonType="submit" size="sm" variant="filled" innerClass="w-full bg-blue-500 text-white" disabled={loading} loading={loading}>
 							Add
 						</Button>
 						<Button buttonType="button" size="sm" variant="outline" innerClass="w-full  text-red-500" disabled={loading} onClick={onClose}>

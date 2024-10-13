@@ -7,7 +7,7 @@ import { formatDateToUTC } from '../utils';
 
 const AddExpenseModal: React.FC<any> = ({ category, closeModal }) => {
 	const [amount, setAmount] = useState<string>('');
-	const [date, setDate] = useState<string>('');
+	const [date, setDate] = useState<any>(formatDateToUTC(new Date()).split('T')[0]);
 	const [description, setDescription] = useState<string>('');
 	const [error, setError] = useState<{ amount?: string; date?: string }>({});
 	const { loading, handleAddExpense } = useExpenseContext();
@@ -32,6 +32,7 @@ const AddExpenseModal: React.FC<any> = ({ category, closeModal }) => {
 
 		const reqObj = { category: category.name, amount, date: formatDateToUTC(date), description };
 		await handleAddExpense(reqObj);
+		closeModal();
 	};
 
 	return (
@@ -73,7 +74,14 @@ const AddExpenseModal: React.FC<any> = ({ category, closeModal }) => {
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 					<div className="flex flex-1 w-100 items-center justify-start gap-4">
-						<Button buttonType="submit" size="sm" variant="filled" innerClass="w-full bg-blue-500 text-white" disabled={loading}>
+						<Button
+							buttonType="submit"
+							size="sm"
+							variant="filled"
+							innerClass="w-full border-primary  text-white"
+							disabled={loading}
+							loading={loading}
+						>
 							Add expense
 						</Button>
 						<Button buttonType="button" size="sm" variant="outline" innerClass="w-full  text-red-500" disabled={loading} onClick={closeModal}>

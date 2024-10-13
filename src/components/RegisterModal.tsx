@@ -127,6 +127,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 						innerClass="w-full bg-blue-500 text-white"
 						onClick={handleRegister}
 						disabled={loading}
+						loading={loading}
 					>
 						{loading ? 'Signing up...' : 'Sign Up'}
 					</Button>

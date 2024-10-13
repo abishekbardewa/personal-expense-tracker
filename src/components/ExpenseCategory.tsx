@@ -49,9 +49,9 @@ const ExpenseCategory: React.FC = () => {
 					New category
 				</Button>
 			</div>
-			<ul role="list" className="relative  rounded-[16px] h-96 md:h-[500px] overflow-y-auto scrollbar-hidden">
+			<ul role="list" className="  rounded-[16px] h-96 md:h-[500px] overflow-y-auto scrollbar-hidden">
 				{categories.map((data) => (
-					<li key={data.category?._id} className="relative flex justify-between gap-x-6 p-3 hover:bg-gray-50 ">
+					<li key={data.category?._id} className=" flex justify-between gap-x-6 p-3 hover:bg-gray-50 ">
 						<div className="flex min-w-0 gap-x-4">
 							<div className="min-w-0 flex-auto">
 								<p className="text-sm font-semibold leading-6 text-gray-900">{data.category.name}</p>
@@ -63,29 +63,9 @@ const ExpenseCategory: React.FC = () => {
 							<div role="button" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleDelete(data.category)}>
 								<FaTrash className="h-5 w-5 text-red-600" />
 							</div>
-							{/* <div
-								role="button"
-								className="relative border flex items-end rounded-full px-3 py-1 text-sm font-medium bg-white text-primary"
-								onClick={() => handleDelete(data.category)}
-							>
-								<div className="flex flex-col items-center">Delete</div>
-							</div> */}
 						</div>
 					</li>
 				))}
-				{/* <li className="sticky bottom-0 bg-gradient p-3 text-center">
-					<Button
-						buttonType="button"
-						size="md"
-						variant="filled"
-						innerClass="w-50 bg-white"
-						innerTextClass="text-primary"
-						startIcon={<FaPlus />}
-						onClick={() => setShowCategoryModal(true)}
-					>
-						Add new category
-					</Button>
-				</li> */}
 			</ul>
 			{showCategoryModal && <AddCategoryModal onClose={() => setShowCategoryModal(false)} />}
 			{isModalOpen && <AddExpenseModal category={selectedCategory} closeModal={closeModal} />}

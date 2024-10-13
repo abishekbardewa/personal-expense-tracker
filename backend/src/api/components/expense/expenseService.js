@@ -38,36 +38,51 @@ const getExpensesByUserId = async (userId, year, month) => {
 		const user = await Users.findById(userId).select('categories');
 		const userCategories = user.categories || [];
 
-		// Step 2: Fetch expenses for the specified userId and month
+		// Step 2: Fetch expenses for the specified userId and month, already sorted by createdAt
 		const expenses = await Expense.find({
 			userId,
 			date: { $gte: startDate, $lt: endDate },
-		}).sort({ date: -1 });
+		}).sort({ createdAt: -1 }); // Sort by creation date (newest first)
 
 		// Step 3: Calculate total spent for the month
 		const totalSpent = expenses.reduce((total, expense) => total + expense.amount, 0);
 
-		// Step 4: Combine expenses with categories
+		// Step 4: Combine expenses with categories and ensure each category's expenses are sorted by createdAt
 		const categoryExpenses = userCategories.map((category) => {
+			// Filter expenses by category and keep the same order from the 'expenses' array
 			const categoryExpensesData = expenses.filter((expense) => expense.category === category.name);
 
+			// Calculate total amount spent for the current category
 			const categoryTotal = categoryExpensesData.reduce((sum, expense) => sum + expense.amount, 0);
 
-			// Collect dates for each expense in this category
+			// Collect sorted dates for each expense in this category
 			const spentDates = categoryExpensesData.map((expense) => expense.date);
+			const latestCreatedAt = categoryExpensesData.length ? categoryExpensesData[0].createdAt : null;
+
 			return {
 				category,
-				totalAmount: categoryTotal || 0, // If no expenses, set to 0
-				spentDates: spentDates.length ? spentDates : [], // Dates when expenses were made
+				totalAmount: categoryTotal || 0, // If no expenses, set total to 0
+				spentDates: spentDates.length ? spentDates : [], // Dates when expenses were made, sorted by creation date
+				latestCreatedAt,
 			};
 		});
-
+		categoryExpenses.sort((a, b) => {
+			if (a.latestCreatedAt && b.latestCreatedAt) {
+				return new Date(b.latestCreatedAt) - new Date(a.latestCreatedAt);
+			} else if (a.latestCreatedAt) {
+				return -1;
+			} else if (b.latestCreatedAt) {
+				return 1;
+			} else {
+				return 0; // If no expenses in both categories, keep the original order
+			}
+		});
 		return {
 			status: 'SUCCESS',
 			data: {
 				categoryExpenses, // Total expenses for each category
 				totalSpent, // Total spent for the month
-				expenses,
+				expenses, // List of expenses already sorted by creation date
 			},
 		};
 	} catch (error) {
@@ -388,13 +403,13 @@ const getInsights = async (userId) => {
 			// Update the message logic
 			const message =
 				currentMonthAmount > 0 && previousMonthAmount === 0 && !hasPreviousData
-					? `This is your first time spending on ${category}. You spent ${currentMonthAmount} this month. Keep tracking your expenses to see how this category develops!`
+					? `This is your first time spending on ${category}. You spent Rs.${currentMonthAmount} this month. Keep tracking your expenses to see how this category develops!`
 					: currentMonthAmount > previousMonthAmount
-					? `You spent ${
+					? `You spent Rs.${
 							currentMonthAmount - previousMonthAmount
 					  } more on ${category} compared to last month. Consider reviewing this category to manage your budget better.`
 					: currentMonthAmount < previousMonthAmount
-					? `You spent ${previousMonthAmount - currentMonthAmount} less on ${category} compared to last month. Great job on saving money!`
+					? `You spent Rs.${previousMonthAmount - currentMonthAmount} less on ${category} compared to last month. Great job on saving money!`
 					: `Your spending on ${category} has remained the same compared to last month.`;
 
 			currentMonthInsights.push({
