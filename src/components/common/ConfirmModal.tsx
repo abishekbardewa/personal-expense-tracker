@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LuLoader2 } from 'react-icons/lu';
 
-const ConfirmModal = ({
+const ConfirmModal: React.FC<any> = ({
 	modalId,
 	title,
 	subtitle,

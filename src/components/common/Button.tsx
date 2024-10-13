@@ -1,7 +1,7 @@
 import React from 'react';
 import { LuLoader2 } from 'react-icons/lu';
 
-const Button = ({
+const Button: React.FC<any> = ({
 	size = 'md',
 	startIcon = '',
 	endIcon = '',

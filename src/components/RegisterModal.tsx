@@ -47,7 +47,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 				toast.success('User registered successfully');
 				onRegisterSuccess(false);
 			} else {
-				toast.error(err.msg);
+				toast.error(data.err.msg);
 			}
 		} catch (error: any) {
 			toast.error(error.response.data.msg);

@@ -5,7 +5,7 @@ import TextAreaField from './common/TextAreaField';
 import { useExpenseContext } from './context/ExpenseProvider';
 import { formatDateToUTC } from '../utils';
 
-const EditExpenseModal: React.FC = ({ category, closeModal }) => {
+const EditExpenseModal: React.FC<any> = ({ category, closeModal }: any) => {
 	const [amount, setAmount] = useState<string>('');
 	const [date, setDate] = useState<string>('');
 	const [description, setDescription] = useState<string>('');

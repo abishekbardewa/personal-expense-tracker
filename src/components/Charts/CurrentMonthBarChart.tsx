@@ -3,8 +3,8 @@ import { Bar } from 'react-chartjs-2';
 import { useExpenseContext } from '../context/ExpenseProvider';
 import EmptyState from '../common/EmptyState';
 import 'chart.js/auto';
-const CurrentMonthBarChart = () => {
-	const chartRef = useRef();
+const CurrentMonthBarChart: React.FC<any> = () => {
+	const chartRef = useRef<any>();
 	const { chartData } = useExpenseContext();
 
 	useEffect(() => {

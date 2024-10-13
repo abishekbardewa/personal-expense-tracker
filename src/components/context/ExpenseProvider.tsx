@@ -3,7 +3,7 @@ import {
 	addExpense,
 	deleteExpense,
 	editExpense,
-	getCategories,
+	// getCategories,
 	getCurrentMonthChart,
 	getCurrentMonthInsights,
 	getExpenses,
@@ -15,7 +15,7 @@ const ExpenseContext = createContext(null);
 
 export const useExpenseContext = () => useContext(ExpenseContext);
 
-export const ExpenseProvider: React.FC = ({ children }) => {
+export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => {
 	const [expenses, setExpenses] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [monthlyInsights, setMonthlyInsights] = useState([]);

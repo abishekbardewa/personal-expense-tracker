@@ -3,7 +3,7 @@ import Button from './common/Button';
 import InputField from './common/InputField';
 import { useExpenseContext } from './context/ExpenseProvider';
 
-const AddCategoryModal: React.FC = ({ onClose }) => {
+const AddCategoryModal: React.FC<any> = ({ onClose }) => {
 	const [newCategory, setNewCategory] = useState<string>('');
 	const [error, setError] = useState<{ newCategory?: string }>({});
 	const { loading, handleAddCategory } = useExpenseContext();
