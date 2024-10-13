@@ -22,11 +22,11 @@
 		"joi": "^17.13.3",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.7.1",
+		"swagger-autogen": "^2.23.7",
+		"swagger-ui-express": "^5.0.1",
 		"winston": "^3.15.0"
 	},
 	"devDependencies": {
-		"nodemon": "^3.1.7",
-		"swagger-autogen": "^2.23.7",
-		"swagger-ui-express": "^5.0.1"
+		"nodemon": "^3.1.7"
 	}
 }
