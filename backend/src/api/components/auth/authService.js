@@ -34,6 +34,8 @@ const createUser = async (name, email, password) => {
 			categories: predefinedCategories,
 		});
 
+		console.log('Users', user);
+
 		return {
 			status: 'SUCCESS',
 			data: resp,
