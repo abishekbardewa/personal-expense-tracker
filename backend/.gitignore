@@ -1,0 +1,12 @@
+node_modules
+.env
+logs
+**/.DS_Store
+prompt.json
+storage/*
+text_files/*
+src/api/swaggerDocs/swagger-output.json
+test.js
+fileName_1.txt
+**.txt
+**.mp3

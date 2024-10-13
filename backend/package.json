@@ -1,0 +1,32 @@
+{
+	"name": "fintrack-be",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"generate-docs": "node ./src/api/swaggerDocs/swagger.js",
+		"start": " node ./src/api/app.js",
+		"dev": " nodemon ./src/api/app.js"
+	},
+	"author": "Abishek Bardewa",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"app-root-path": "^3.1.0",
+		"bcrypt": "^5.1.1",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"express": "^4.21.1",
+		"express-mongo-sanitize": "^2.2.0",
+		"express-rate-limit": "^7.4.1",
+		"joi": "^17.13.3",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.7.1",
+		"winston": "^3.15.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.7",
+		"swagger-autogen": "^2.23.7",
+		"swagger-ui-express": "^5.0.1"
+	}
+}
