@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RegisterModal from '../components/RegisterModal';
 import LoginModal from '../components/LoginModal';
 import Button from '../components/common/Button';
+import { useNavigate } from 'react-router-dom';
+import { selectIsAuthenticated } from '../redux/slices/authSlice';
+import { useSelector } from 'react-redux';
 
 const IntroPage: React.FC = () => {
+	const navigate = useNavigate();
+	const isAuthenticated = useSelector(selectIsAuthenticated);
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate('/overview');
+		}
+	}, [isAuthenticated, navigate]);
+
 	const [showLogin, setShowLogin] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
 
