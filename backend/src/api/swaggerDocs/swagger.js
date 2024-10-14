@@ -9,19 +9,18 @@ const doc = {
 		description: 'API documentation for FinTrack Backend',
 	},
 	host: 'personal-expense-tracker-zqw8.onrender.com',
-	basePath: config.apiVersionUrl || '/', // Ensure basePath is set correctly
-	schemes: ['https'], // Add 'https' if needed
+	basePath: config.apiVersionUrl || '/',
+	schemes: ['https', 'http'],
 	consumes: ['application/json', 'form-data', 'multipart/form-data'],
 	produces: ['application/json'],
 	tags: [
-		{ name: 'Auth', description: 'Endpoints for authentication' },
-		{ name: 'Category', description: 'Endpoints for category' },
-		{ name: 'Expense', description: 'Endpoints for expense' },
+		{ name: 'Auth' },
+		{ name: 'Category' },
+		{ name: 'Expense' },
 		// 	// Add more tags for other groups as needed
 	],
 	securityDefinitions: {
 		BearerAuth: {
-			// Definition for JWT authorization
 			type: 'apiKey',
 			name: 'Authorization',
 			in: 'header',
@@ -32,6 +31,6 @@ const doc = {
 };
 
 const outputFile = './src/api/swaggerDocs/swagger-output.json';
-const endpointsFiles = ['./src/api/components/index.js']; // Paths to your route files
+const endpointsFiles = ['./src/api/components/index.js'];
 
 swaggerAutogenInstance(outputFile, endpointsFiles, doc);
