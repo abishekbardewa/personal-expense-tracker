@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { Bar, Doughnut } from 'react-chartjs-2';
-import { useExpenseContext } from '../context/ExpenseProvider';
-import EmptyState from '../common/EmptyState';
+import { Doughnut } from 'react-chartjs-2';
+
 import 'chart.js/auto';
-const CurrentMonthBarChart: React.FC<any> = () => {
+import { useExpenseContext } from './context/ExpenseProvider';
+import EmptyState from './common/EmptyState';
+const ExpenseDoughnutChart: React.FC<any> = () => {
 	const chartRef = useRef<any>();
 	const { chartData } = useExpenseContext();
 
@@ -19,7 +20,7 @@ const CurrentMonthBarChart: React.FC<any> = () => {
 	return (
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Spending Trends</h2>
-			<div className="h-[500px] w-full p-6 bg-white rounded-[16px]">
+			<div className="h-[500px] p-6 bg-white rounded-[16px]">
 				{chartData && chartData.labels.length > 0 ? (
 					<Doughnut
 						ref={chartRef}
@@ -27,13 +28,9 @@ const CurrentMonthBarChart: React.FC<any> = () => {
 						options={{
 							responsive: true,
 							maintainAspectRatio: false,
-							scales: {
-								y: {
-									beginAtZero: true,
-									title: {
-										display: true,
-										text: 'Total Amount Spent',
-									},
+							plugins: {
+								legend: {
+									position: 'right',
 								},
 							},
 						}}
@@ -47,4 +44,4 @@ const CurrentMonthBarChart: React.FC<any> = () => {
 	);
 };
 
-export default CurrentMonthBarChart;
+export default ExpenseDoughnutChart;
