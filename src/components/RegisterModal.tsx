@@ -82,7 +82,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 	return (
 		<div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex justify-center items-center">
 			<div className="bg-white p-8 rounded shadow-lg w-96">
-				<h2 className="text-xl font-semibold mb-4">Sign Up</h2>
+				<h2 className="text-xl font-semibold ">Create Your Account</h2>
+				<p className="mt-1 mb-4 text-sm text-gray-500">Join to start tracking your spending today!</p>
 				<form onSubmit={handleSubmit} noValidate>
 					<InputField
 						label="Name"

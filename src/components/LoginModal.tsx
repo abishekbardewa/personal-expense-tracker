@@ -84,7 +84,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 	return (
 		<div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex justify-center items-center">
 			<div className="bg-white p-8 rounded shadow-lg w-96">
-				<h2 className="text-xl font-semibold mb-4">Login</h2>
+				<h2 className="text-xl font-semibold">Log In to Your Account</h2>
+				<p className="mt-1 mb-4 text-sm text-gray-500">Welcome back! Let’s track your expenses</p>
 				<form onSubmit={handleSubmit} noValidate>
 					<InputField
 						label="Email"

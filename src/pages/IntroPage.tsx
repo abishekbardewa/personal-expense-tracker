@@ -31,8 +31,8 @@ const IntroPage: React.FC = () => {
 		<>
 			<div className="flex items-center justify-center h-screen p-8">
 				<div className="text-center">
-					<h1 className="text-2xl font-bold mb-4">Welcome to FinTRACK</h1>
-
+					<h1 className="text-3xl font-bold">Welcome to FinTRACK</h1>
+					<p className="mt-1  mb-6 text-lg text-gray-500 text-center">Your personal finance tracker for smarter spending.</p>
 					<div className="flex flex-row items-center justify-center gap-2">
 						<Button
 							buttonType="button"
