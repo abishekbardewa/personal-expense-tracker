@@ -403,14 +403,12 @@ const getInsights = async (userId) => {
 			// Update the message logic
 			const message =
 				currentMonthAmount > 0 && previousMonthAmount === 0 && !hasPreviousData
-					? `This is your first time spending on ${category}. You spent ₹${currentMonthAmount} this month. Keep tracking your expenses to see how this category develops!`
+					? `First time spending on ${category}: ₹${currentMonthAmount}. Keep tracking!`
 					: currentMonthAmount > previousMonthAmount
-					? `You spent ₹${
-							currentMonthAmount - previousMonthAmount
-					  } more on ${category} compared to last month. Consider reviewing this category to manage your budget better.`
+					? `You spent ₹${currentMonthAmount - previousMonthAmount} more on ${category} than last month. Review your budget.`
 					: currentMonthAmount < previousMonthAmount
-					? `You spent ₹${previousMonthAmount - currentMonthAmount} less on ${category} compared to last month. Great job on saving money!`
-					: `Your spending on ${category} has remained the same compared to last month.`;
+					? `You spent ₹${previousMonthAmount - currentMonthAmount} less on ${category} than last month. Great job!`
+					: `Your spending on ${category} is the same as last month.`;
 
 			currentMonthInsights.push({
 				category: category,

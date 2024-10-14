@@ -1,28 +1,55 @@
-import EmptyState from './common/EmptyState';
+import { useState } from 'react';
+import Loader from './common/Loader';
 import { useExpenseContext } from './context/ExpenseProvider';
+import MonthlyInsights from './MonthlyInsights';
+import ImprovementInsights from './ImprovementInsights';
+import WarningInsights from './WarningsInsight';
+import TabButton from './common/TabButton';
 
 const Insights: React.FC = () => {
-	const { monthlyInsights, overallImprovement, overallWarnings } = useExpenseContext();
+	const { loading } = useExpenseContext();
+
+	const [selectedTab, setSelectedTab] = useState<string>('insights');
+
+	if (loading) {
+		return <Loader />;
+	}
 	return (
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Key Insights</h2>
-			{monthlyInsights && monthlyInsights.length > 0 ? (
-				<ul role="list" className="h-96 md:h-[500px] overflow-y-auto scrollbar-hidden px-5 py-4 pb-2 bg-white rounded-[16px]">
-					{monthlyInsights.map((ele, idx) => (
-						<li key={`${ele}-${idx}`} className="flex justify-between gap-x-6 pb-3">
-							<div className="flex min-w-0 gap-x-4">
-								<div className="min-w-0 flex-auto">
-									<p className="text-md font-semibold  text-gray-900">{ele.category}</p>
 
-									<p className="mt-1 text-sm  text-gray-500">{ele.message}</p>
-								</div>
-							</div>
-						</li>
-					))}
+			<div className="h-[500px] px-5 py-4 pb-2 bg-white rounded-[16px]">
+				<ul className="flex flex-wrap mb-4">
+					<li className="me-2">
+						<TabButton
+							label="Insights"
+							onClick={() => setSelectedTab('insights')}
+							color="text-primary"
+							borderColor="border-primary"
+							isSelected={selectedTab === 'insights'}
+						/>
+					</li>
+					<li className="me-2">
+						<TabButton
+							label="Improvements"
+							onClick={() => setSelectedTab('improvement')}
+							color="text-blue-600"
+							borderColor="border-blue-600"
+							isSelected={selectedTab === 'improvement'}
+						/>
+					</li>
+					<li className="me-2">
+						<TabButton
+							label="Warnings"
+							onClick={() => setSelectedTab('warnings')}
+							color="text-error-600"
+							borderColor="border-error-600"
+							isSelected={selectedTab === 'warnings'}
+						/>
+					</li>
 				</ul>
-			) : (
-				<EmptyState title="No expenses logged yet." subtitle="Begin tracking your spending to enhance your financial understanding." />
-			)}
+				{selectedTab === 'insights' ? <MonthlyInsights /> : selectedTab === 'improvement' ? <ImprovementInsights /> : <WarningInsights />}
+			</div>
 		</div>
 	);
 };

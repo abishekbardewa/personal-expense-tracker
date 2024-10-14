@@ -36,3 +36,7 @@ export const formatDate = (dateString: any) => {
 	// Ensure the format matches 'DD MMM, YY'
 	return formattedDate.replace(/(\d{2}) (\w{3})/, '$1 $2');
 };
+
+export const formatCurrency = (amount: any) => {
+	return `₹ ${amount.toLocaleString('en-IN')}`;
+};

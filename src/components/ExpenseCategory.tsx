@@ -7,6 +7,8 @@ import AddExpenseModal from './AddExpenseModal';
 import { useExpenseContext } from './context/ExpenseProvider';
 import ConfirmModal from './common/ConfirmModal';
 import { MdOutlineCancel } from 'react-icons/md';
+import Loader from './common/Loader';
+import { formatCurrency } from '../utils';
 
 const ExpenseCategory: React.FC = () => {
 	const { loading, categories, handleDeleteCategory } = useExpenseContext();
@@ -33,6 +35,10 @@ const ExpenseCategory: React.FC = () => {
 		setSelectedCategory(null);
 	};
 
+	if (loading) {
+		return <Loader />;
+	}
+
 	return (
 		<div>
 			<div className="flex justify-between items-center  mb-5">
@@ -58,7 +64,7 @@ const ExpenseCategory: React.FC = () => {
 							</div>
 						</div>
 						<div className="flex shrink-0 items-center gap-x-4">
-							<p className="text-sm leading-6 text-gray-900">₹{data.totalAmount}</p>
+							<p className="text-sm leading-6 text-gray-900">{formatCurrency(data.totalAmount)}</p>
 							<CategoryButton onClick={() => openModal(data.category)} />
 							<div role="button" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleDelete(data.category)}>
 								<FaTrash className="h-5 w-5 text-red-600" />

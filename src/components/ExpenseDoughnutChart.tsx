@@ -4,9 +4,10 @@ import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { useExpenseContext } from './context/ExpenseProvider';
 import EmptyState from './common/EmptyState';
+import Loader from './common/Loader';
 const ExpenseDoughnutChart: React.FC<any> = () => {
 	const chartRef = useRef<any>();
-	const { chartData } = useExpenseContext();
+	const { loading, chartData } = useExpenseContext();
 
 	useEffect(() => {
 		if (chartRef.current) {
@@ -16,6 +17,10 @@ const ExpenseDoughnutChart: React.FC<any> = () => {
 			}
 		}
 	}, [chartData]);
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<div>

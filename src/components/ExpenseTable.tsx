@@ -5,7 +5,8 @@ import { useState } from 'react';
 import ConfirmModal from './common/ConfirmModal';
 import { MdOutlineCancel } from 'react-icons/md';
 import EditExpenseModal from './EditExpenseModal';
-import { formatDate } from '../utils';
+import { formatCurrency, formatDate } from '../utils';
+import Loader from './common/Loader';
 
 const ExpenseTable: React.FC = () => {
 	const { loading, expenses, handleDeleteExpense } = useExpenseContext();
@@ -27,6 +28,10 @@ const ExpenseTable: React.FC = () => {
 		setSelectedRecord(record);
 		setShowEditModal(true);
 	};
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<div>
@@ -58,7 +63,7 @@ const ExpenseTable: React.FC = () => {
 										{expense.description && <p className="mt-1 truncate text-xs leading-5 text-gray-500">{expense.description}</p>}
 									</td>
 									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatDate(expense.date)}</td>
-									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">₹{expense.amount}</td>
+									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatCurrency(expense.amount)}</td>
 
 									<td className="whitespace-nowrap  px-3 py-5 text-right text-sm font-medium sm:pr-0 ">
 										<div className="flex item-center  gap-4">
