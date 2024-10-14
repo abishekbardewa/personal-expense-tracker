@@ -8,9 +8,9 @@ const doc = {
 		title: 'FinTrack Backend API',
 		description: 'API documentation for FinTrack Backend',
 	},
-	host: 'https://personal-expense-tracker-zqw8.onrender.com',
+	host: 'personal-expense-tracker-zqw8.onrender.com',
 	basePath: config.apiVersionUrl || '/', // Ensure basePath is set correctly
-	schemes: ['https', 'http'], // Add 'https' if needed
+	schemes: ['https'], // Add 'https' if needed
 	consumes: ['application/json', 'form-data', 'multipart/form-data'],
 	produces: ['application/json'],
 	tags: [
