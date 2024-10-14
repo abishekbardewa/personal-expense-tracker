@@ -58,7 +58,7 @@ const ExpenseTable: React.FC = () => {
 										{expense.description && <p className="mt-1 truncate text-xs leading-5 text-gray-500">{expense.description}</p>}
 									</td>
 									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatDate(expense.date)}</td>
-									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Rs.{expense.amount}</td>
+									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">₹{expense.amount}</td>
 
 									<td className="whitespace-nowrap  px-3 py-5 text-right text-sm font-medium sm:pr-0 ">
 										<div className="flex item-center  gap-4">

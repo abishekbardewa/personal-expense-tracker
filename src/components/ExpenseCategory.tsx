@@ -58,7 +58,7 @@ const ExpenseCategory: React.FC = () => {
 							</div>
 						</div>
 						<div className="flex shrink-0 items-center gap-x-4">
-							<p className="text-sm leading-6 text-gray-900">Rs.{data.totalAmount}</p>
+							<p className="text-sm leading-6 text-gray-900">₹{data.totalAmount}</p>
 							<CategoryButton onClick={() => openModal(data.category)} />
 							<div role="button" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleDelete(data.category)}>
 								<FaTrash className="h-5 w-5 text-red-600" />

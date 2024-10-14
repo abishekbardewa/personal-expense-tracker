@@ -110,7 +110,7 @@ const getYearlyMonthlyChart = async (userId, year, month) => {
 			{
 				$project: {
 					_id: 0,
-					label: '$_id',
+					label: { $concat: ['$_id', ': ₹', { $toString: '$totalSpent' }] },
 					totalSpent: 1,
 				},
 			},
@@ -403,13 +403,13 @@ const getInsights = async (userId) => {
 			// Update the message logic
 			const message =
 				currentMonthAmount > 0 && previousMonthAmount === 0 && !hasPreviousData
-					? `This is your first time spending on ${category}. You spent Rs.${currentMonthAmount} this month. Keep tracking your expenses to see how this category develops!`
+					? `This is your first time spending on ${category}. You spent ₹${currentMonthAmount} this month. Keep tracking your expenses to see how this category develops!`
 					: currentMonthAmount > previousMonthAmount
-					? `You spent Rs.${
+					? `You spent ₹${
 							currentMonthAmount - previousMonthAmount
 					  } more on ${category} compared to last month. Consider reviewing this category to manage your budget better.`
 					: currentMonthAmount < previousMonthAmount
-					? `You spent Rs.${previousMonthAmount - currentMonthAmount} less on ${category} compared to last month. Great job on saving money!`
+					? `You spent ₹${previousMonthAmount - currentMonthAmount} less on ${category} compared to last month. Great job on saving money!`
 					: `Your spending on ${category} has remained the same compared to last month.`;
 
 			currentMonthInsights.push({
