@@ -28,11 +28,11 @@ const ExpenseDoughnutChart: React.FC<any> = () => {
 						options={{
 							responsive: true,
 							maintainAspectRatio: false,
-							plugins: {
-								legend: {
-									position: 'right',
-								},
-							},
+							// plugins: {
+							// 	legend: {
+							// 		position: 'right',
+							// 	},
+							// },
 						}}
 						style={{ height: '100%', width: '100%' }}
 					/>

@@ -49,8 +49,8 @@ export default function UserMenu() {
 		<div className="flex items-center gap-16">
 			<div className="hidden md:flex items-center gap-8">
 				<MenuLink to="/overview">Overview</MenuLink>
-				<MenuLink to="/dashboard">Monthy</MenuLink>
-				<MenuLink to="/yearlay">Yearly</MenuLink>
+				{/* <MenuLink to="/dashboard">Monthy</MenuLink>
+				<MenuLink to="/yearlay">Yearly</MenuLink> */}
 			</div>
 			<div ref={buttonRef} className="relative">
 				<button
@@ -77,12 +77,12 @@ export default function UserMenu() {
 						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
 							<MenuLink to="/overview">Overview</MenuLink>
 						</li>
-						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
+						{/* <li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
 							<MenuLink to="/dashboard">Monthly</MenuLink>
 						</li>
 						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
 							<MenuLink to="/yearly">Yearly</MenuLink>
-						</li>
+						</li> */}
 						<li className="flex cursor-pointer items-center gap-3 p-4 hover:bg-gray-50" onClick={handleLogout}>
 							<FaArrowRightFromBracket className="text-base-secondary-text" />
 							Logout
