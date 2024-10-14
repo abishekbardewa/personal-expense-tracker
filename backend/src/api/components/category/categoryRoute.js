@@ -5,10 +5,11 @@ import { addCustomCategoryApi, removeCategoryApi } from './categoryController.js
 
 const router = express.Router();
 
-// router.use((req, res, next) => {
-// 	swagger.tags = ['Category'];
-// 	next();
-// });
+router.use((req, res, next) => {
+	/* #swagger.tags = ['Category'] */
+	/* #swagger.security = [{ "BearerAuth": []}] */
+	next();
+});
 
 router.post('/add-custom-category', checkSignature, addCustomCategoryApi);
 router.delete('/delete-category', checkSignature, removeCategoryApi);

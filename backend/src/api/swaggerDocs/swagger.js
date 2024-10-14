@@ -14,9 +14,9 @@ const doc = {
 	consumes: ['application/json', 'form-data', 'multipart/form-data'],
 	produces: ['application/json'],
 	tags: [
-		{ name: 'Auth', description: 'Endpoints related to authentication' },
-		{ name: 'Category', description: 'Endpoints related to category' },
-		{ name: 'Expense', description: 'Endpoints related to expense' },
+		{ name: 'Auth', description: 'Endpoints for authentication' },
+		{ name: 'Category', description: 'Endpoints for category' },
+		{ name: 'Expense', description: 'Endpoints for expense' },
 		// 	// Add more tags for other groups as needed
 	],
 	securityDefinitions: {

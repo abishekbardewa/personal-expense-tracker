@@ -5,7 +5,8 @@ import { checkSignature } from '../../middleware/auth.js';
 const router = express.Router();
 
 router.use((req, res, next) => {
-	// tags = ['Auth'];
+	/* #swagger.tags = ['Auth'] */
+	/* #swagger.security = [{ "BearerAuth": []}] */
 	next();
 });
 

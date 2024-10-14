@@ -14,10 +14,11 @@ import {
 
 const router = express.Router();
 
-// router.use((req, res, next) => {
-// 	swagger.tags = ['Expense'];
-// 	next();
-// });
+router.use((req, res, next) => {
+	/* #swagger.tags = ['Expense'] */
+	/* #swagger.security = [{ "BearerAuth": []}] */
+	next();
+});
 
 router.post('/add-expense', checkSignature, addExpenseApi);
 router.get('/get-expense', checkSignature, getExpensesApi);
@@ -26,7 +27,7 @@ router.get('/monthly-chart/:year/:month', checkSignature, getYearlyMonthlyChartA
 router.get('/yearly-chart/:year', checkSignature, getYearlyChartApi);
 router.post('/compare-expenses', checkSignature, getYearlyExpenseComparisonApi);
 router.get('/insights', checkSignature, getInsightsApi);
-router.put('/edit-expense/:expenseId', updateExpenseApi);
-router.delete('/delete-expense/:expenseId', deleteExpenseApi);
+router.put('/edit-expense/:expenseId', checkSignature, updateExpenseApi);
+router.delete('/delete-expense/:expenseId', checkSignature, deleteExpenseApi);
 
 export default router;
