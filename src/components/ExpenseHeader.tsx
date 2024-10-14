@@ -1,8 +1,12 @@
 import { formatCurrency } from '../utils';
+import Loader from './common/Loader';
 import { useExpenseContext } from './context/ExpenseProvider';
 
 const ExpenseHeader: React.FC = () => {
-	const { totalAmount } = useExpenseContext();
+	const { loading, totalAmount } = useExpenseContext();
+	if (loading) {
+		return <Loader />;
+	}
 	return (
 		<div className="flex flex-col items-center justify-center gap-3">
 			<p className="text-md text-gray-500">Total spent</p>
