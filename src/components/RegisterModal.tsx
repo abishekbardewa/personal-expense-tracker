@@ -125,7 +125,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 						buttonType="button"
 						size="sm"
 						variant="filled"
-						innerClass="w-full bg-blue-500 text-white"
+						innerClass="w-full bg-blue-500 text-white border-primary"
 						onClick={handleRegister}
 						disabled={loading}
 						loading={loading}
@@ -133,7 +133,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 						{loading ? 'Signing up...' : 'Sign Up'}
 					</Button>
 
-					<Button buttonType="button" size="sm" variant="outline" innerClass="w-full mt-4 text-red-500" onClick={onClose} disabled={loading}>
+					<Button buttonType="button" size="sm" variant="outline" innerClass="w-full mt-4 text-red-500 " onClick={onClose} disabled={loading}>
 						Cancel
 					</Button>
 				</form>

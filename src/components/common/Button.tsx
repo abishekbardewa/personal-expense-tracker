@@ -44,7 +44,7 @@ const Button: React.FC<any> = ({
 
 	return (
 		<button
-			className={`cursor-pointer rounded-full border font-semibold shadow-xs transition-colors focus:ring-1 ${getVariantClass()} ${getSizeClass()} ${innerClass}`}
+			className={`cursor-pointer rounded-full border font-semibold shadow-xs transition-colors focus:ring-2 ring-[#737B8B] ${getVariantClass()} ${getSizeClass()} ${innerClass}`}
 			disabled={disabled || loading}
 			type={buttonType}
 			onClick={onClick}

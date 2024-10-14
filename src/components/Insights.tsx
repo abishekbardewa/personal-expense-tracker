@@ -19,7 +19,7 @@ const Insights: React.FC = () => {
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Key Insights</h2>
 
 			<div className="h-[500px] px-5 py-4 pb-2 bg-white rounded-[16px]">
-				<ul className="flex flex-wrap mb-4">
+				<ul className="flex overflow-y-auto md:mb-4">
 					<li className="me-2">
 						<TabButton
 							label="Insights"

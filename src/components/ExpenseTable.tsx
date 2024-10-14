@@ -58,9 +58,9 @@ const ExpenseTable: React.FC = () => {
 						<tbody className="divide-y divide-gray-200 bg-white">
 							{expenses.map((expense, idx) => (
 								<tr key={`${expense.category}-${idx}`}>
-									<td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+									<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
 										{expense.category}
-										{expense.description && <p className="mt-1 truncate text-xs leading-5 text-gray-500">{expense.description}</p>}
+										{expense.description && <p className="mt-1   text-xs leading-5 text-gray-500">{expense.description}</p>}
 									</td>
 									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatDate(expense.date)}</td>
 									<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatCurrency(expense.amount)}</td>

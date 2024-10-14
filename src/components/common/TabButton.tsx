@@ -14,7 +14,7 @@ const TabButton: React.FC<TabButtonProps> = ({ label, onClick, color, borderColo
 			role="button"
 			className={`inline-block p-2 ${
 				isSelected ? `${color} border-b-2 ${borderColor} font-normal` : `text-gray-600 hover:${color} hover:${borderColor}`
-			} rounded-t-lg cursor-pointer`}
+			} rounded-t-lg cursor-pointer whitespace-nowrap`}
 			onClick={onClick}
 		>
 			{label}

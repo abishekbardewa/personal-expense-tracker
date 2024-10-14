@@ -111,7 +111,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 						onChange={handlePasswordChange}
 					/>
 
-					<Button buttonType="submit" size="sm" variant="filled" innerClass="w-full bg-blue-500 text-white" disabled={loading} loading={loading}>
+					<Button
+						buttonType="submit"
+						size="sm"
+						variant="filled"
+						innerClass="w-full bg-blue-500 text-white border-primary"
+						disabled={loading}
+						loading={loading}
+					>
 						{loading ? 'Logging in...' : 'Login'}
 					</Button>
 
