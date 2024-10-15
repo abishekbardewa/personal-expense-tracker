@@ -1,32 +1,33 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectIsAuthenticated, setUser } from '../redux/slices/authSlice';
-import { useState } from 'react';
-import { axiosPrivate } from '../services/axios.service';
 
 const useCurrentUser = () => {
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector(selectIsAuthenticated);
 	const [loading, setLoading] = useState(false);
+
 	useEffect(() => {
-		const getCurrentUser = async () => {
+		const getCurrentUserFromLocalStorage = () => {
+			console.log('Triggered:useCurrentUser');
 			setLoading(true);
 			try {
-				const { data } = await axiosPrivate.get('/user/current-user');
+				const token = localStorage.getItem('token');
+				const user = JSON.parse(localStorage.getItem('user'));
 
-				dispatch(setUser(data.data));
+				if (token && user) {
+					dispatch(setUser(user));
+				}
 			} catch (error) {
-				console.log(error);
+				console.log('Error fetching user from localStorage:', error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		const token = localStorage.getItem('token');
-
-		if (token) {
-			getCurrentUser();
+		if (localStorage.getItem('token')) {
+			getCurrentUserFromLocalStorage();
 		}
 	}, [dispatch, isAuthenticated]);
 
