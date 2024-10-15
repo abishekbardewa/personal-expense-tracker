@@ -27,8 +27,15 @@ export default function UserMenu() {
 	};
 
 	useEffect(() => {
-		const closeMenu = () => {
-			setIsMenuOpen(false);
+		// const closeMenu = () => {
+		// 	setIsMenuOpen(false);
+		// };
+
+		const closeMenu = (event) => {
+			// Prevent clicks inside the menu from closing it
+			if (buttonRef.current && !buttonRef.current.contains(event.target)) {
+				setIsMenuOpen(false);
+			}
 		};
 
 		if (isMenuOpen) {
@@ -66,7 +73,7 @@ export default function UserMenu() {
 
 				<div
 					className={`absolute right-0 top-full z-20 w-48 origin-top-right overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 transform ${
-						isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+						isMenuOpen ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 -translate-y-2'
 					}`}
 				>
 					{/* Dropdown Content */}

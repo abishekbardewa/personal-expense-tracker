@@ -13,7 +13,6 @@ const EditExpenseModal: React.FC<any> = ({ category, closeModal }: any) => {
 	const { loading, handleEditExpense } = useExpenseContext();
 
 	useEffect(() => {
-		console.log(loading);
 		if (category) {
 			setAmount(category.amount);
 			setDate(formatDateToUTC(category.date).split('T')[0]);
