@@ -10,9 +10,9 @@ import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
 import { formatCurrency, formatDate } from '../utils';
 const History: React.FC = () => {
-	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-	const [selectedMonth2, setSelectedMonth2] = useState(new Date().getMonth());
+	const [selectedYear, setSelectedYear] = useState(() => localStorage.getItem('selectedYear') || new Date().getFullYear());
+	const [selectedMonth, setSelectedMonth] = useState(() => localStorage.getItem('selectedMonth') || new Date().getMonth() + 1);
+	const [selectedMonth2, setSelectedMonth2] = useState(() => localStorage.getItem('selectedMonth2') || new Date().getMonth());
 	const [comparisonData, setComparisonData] = useState<any>(null);
 	const [totalSpentData, setTotalSpentData] = useState<any>(null);
 	const [monthlyExpense, setMonthlyExpense] = useState<any>([]);
@@ -20,9 +20,24 @@ const History: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const isCompareDisabled = selectedMonth === selectedMonth2;
 
+	// Save selected states to localStorage when they change
+	useEffect(() => {
+		localStorage.setItem('selectedYear', selectedYear.toString());
+	}, [selectedYear]);
+
+	useEffect(() => {
+		localStorage.setItem('selectedMonth', selectedMonth.toString());
+	}, [selectedMonth]);
+
+	useEffect(() => {
+		localStorage.setItem('selectedMonth2', selectedMonth2.toString());
+	}, [selectedMonth2]);
+
+	// Retrieve data on component mount
 	useEffect(() => {
 		getData();
-	}, []);
+	}, []); // Adjust this dependency if needed
+
 	const getData = async () => {
 		if (isCompareDisabled) {
 			toast.error('Please select a different month for comparison.');
@@ -31,6 +46,7 @@ const History: React.FC = () => {
 		setLoading(true);
 
 		try {
+			// Fetch comparison and monthly expense data
 			const { data } = await axiosPrivate.post('/expense/compare-expenses', {
 				year: selectedYear,
 				months: [selectedMonth, selectedMonth2],
@@ -40,8 +56,8 @@ const History: React.FC = () => {
 				months: [selectedMonth, selectedMonth2],
 			});
 
+			// Set state with retrieved data
 			setMonthlyExpense(monthlyExpenseDetails.data);
-
 			const { comparisonChart, totalSpentChart, insights } = data.data;
 			setComparisonData(comparisonChart);
 			setTotalSpentData(totalSpentChart);
@@ -55,10 +71,6 @@ const History: React.FC = () => {
 
 	return (
 		<>
-			{/* <div>
-				<h2 className="text-3xl font-semibold leading-7 sm:truncate md:text-4xl sm:tracking-tight mb-10">Expense History and Comparison Insights</h2>
-			</div> */}
-
 			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-4xl mb-20">
 				<div className="col-span-1 flex flex-col gap-4">
 					<Dropdown
@@ -146,32 +158,14 @@ const History: React.FC = () => {
 							</ul>
 						</>
 					)}
-					<div className="grid grid-cols-1 md:grid-cols-2  gap-8 mt-20">
-						<div>
-							<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Comparison Chart</h2>
-							<div className="h-[500px] p-6 bg-white rounded-[16px]">
-								{comparisonData?.labels.length > 0 ? (
-									<Bar
-										data={comparisonData}
-										options={{
-											responsive: true,
-											maintainAspectRatio: false,
-										}}
-										style={{ height: '100%', width: '100%' }}
-									/>
-								) : (
-									<EmptyState title="No insights available." subtitle="Add your expenses to visualize your spending patterns and trends." />
-								)}
-							</div>
-						</div>
-
-						{totalSpentData && (
+					{comparisonData && totalSpentData && (
+						<div className="grid grid-cols-1 md:grid-cols-2  gap-8 mt-20">
 							<div>
-								<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Total Spent Chart</h2>
+								<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Category Comparison</h2>
 								<div className="h-[500px] p-6 bg-white rounded-[16px]">
-									{totalSpentData?.labels.length > 0 ? (
+									{comparisonData?.labels.length > 0 ? (
 										<Bar
-											data={totalSpentData}
+											data={comparisonData}
 											options={{
 												responsive: true,
 												maintainAspectRatio: false,
@@ -179,12 +173,38 @@ const History: React.FC = () => {
 											style={{ height: '100%', width: '100%' }}
 										/>
 									) : (
-										<EmptyState title="No insights available." subtitle="Add your expenses to visualize your spending patterns and trends." />
+										<EmptyState
+											title="No comparison data available."
+											subtitle="Add expenses to compare your spending across categories and time periods."
+										/>
 									)}
 								</div>
 							</div>
-						)}
-					</div>
+
+							{totalSpentData && (
+								<div>
+									<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Total Spent Comparison</h2>
+									<div className="h-[500px] p-6 bg-white rounded-[16px]">
+										{totalSpentData?.labels.length > 0 ? (
+											<Bar
+												data={totalSpentData}
+												options={{
+													responsive: true,
+													maintainAspectRatio: false,
+												}}
+												style={{ height: '100%', width: '100%' }}
+											/>
+										) : (
+											<EmptyState
+												title="No spending data available."
+												subtitle="Start tracking your expenses to gain insights into your total spending trends."
+											/>
+										)}
+									</div>
+								</div>
+							)}
+						</div>
+					)}
 
 					{monthlyExpense && monthlyExpense.length > 0 && (
 						<div className="grid grid-cols-1 md:grid-cols-2  gap-8 mt-20">
@@ -252,8 +272,8 @@ const History: React.FC = () => {
 										</div>
 									) : (
 										<EmptyState
-											title={`No insights available  for ${expDetails.month}`}
-											subtitle="Add your expenses to visualize your spending patterns and trends."
+											title={`No data available for ${expDetails.month}`}
+											subtitle="Start adding expenses for this month to see detailed charts and expense entries."
 										/>
 									)}
 								</>

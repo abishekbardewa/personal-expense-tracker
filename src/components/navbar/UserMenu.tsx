@@ -81,15 +81,15 @@ export default function UserMenu() {
 						<p className="text-lg font-semibold break-words">{user?.name}</p>
 					</div>
 					<ul>
-						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
-							<MenuLink to="/overview">Overview</MenuLink>
-						</li>
-						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
-							<MenuLink to="/history">History</MenuLink>
-						</li>
-						<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">
-							<MenuLink to="/trend">Trend</MenuLink>
-						</li>
+						<MenuLink to="/overview">
+							<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">Overview</li>
+						</MenuLink>
+						<MenuLink to="/history">
+							<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">History</li>
+						</MenuLink>
+						<MenuLink to="/trend">
+							<li className="md:hidden flex cursor-pointer items-center gap-3 px-4 py-2 hover:bg-gray-50">Trend</li>
+						</MenuLink>
 						<li className="flex cursor-pointer items-center gap-3 p-4 hover:bg-gray-50" onClick={handleLogout}>
 							<FaArrowRightFromBracket className="text-base-secondary-text" />
 							Logout

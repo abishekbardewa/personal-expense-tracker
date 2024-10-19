@@ -35,6 +35,6 @@ export const timeRangeNames = [
 ];
 
 export const trendOptions = [
-	{ value: 'totalSpent', label: 'Total spent' },
 	{ value: 'category', label: 'Category' },
+	{ value: 'totalSpent', label: 'Total spent' },
 ];

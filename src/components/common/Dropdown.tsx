@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface DropdownProps<T> {
 	label: string;
@@ -12,8 +12,24 @@ interface DropdownProps<T> {
 function Dropdown<T>({ label, options, selectedValue, onSelect, displayValue, keyExtractor }: DropdownProps<T>) {
 	const [isOpen, setIsOpen] = useState(false);
 
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	// Close dropdown if user clicks outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
+
 	return (
-		<div>
+		<div ref={dropdownRef}>
 			<label id={`${label}-label`} className="block text-md font-medium leading-6 text-gray-900">
 				{label}
 			</label>
