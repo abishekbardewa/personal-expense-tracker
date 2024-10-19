@@ -6,7 +6,7 @@ export const getExpenses = async (year: any, month: any) => {
 	return response;
 };
 export const getCurrentMonthChart = async (year: any, month: any) => {
-	const response = await axiosPrivate.get(`${API_URL}/monthly-chart/${year}/${month}`);
+	const response = await axiosPrivate.get(`${API_URL}/month-chart/${year}/${month}`);
 	return response;
 };
 export const getCurrentMonthInsights = async () => {

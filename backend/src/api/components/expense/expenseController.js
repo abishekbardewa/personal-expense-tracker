@@ -4,11 +4,8 @@ import { handleError, handleResponse } from '../../helpers/responseHandler.js';
 import {
 	addExpense,
 	getExpensesByUserId,
-	getCompareExpenseChart,
-	getYearlyMonthlyChart,
-	getYearlyChart,
-	getYearlyExpenseComparison,
-	getInsights,
+	getMonthChart,
+	getMonthlyInsights,
 	updateExpense,
 	deleteExpense,
 	getCompareExpense,
@@ -81,35 +78,8 @@ const getExpensesApi = catchAsync(async (req, res) => {
 	});
 });
 
-const getCompareExpenseChartApi = catchAsync(async (req, res) => {
-	logger.info('Inside getCompareExpenseChartApi Controller');
-
-	const { userId } = req.user;
-	if (!userId) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'User ID is required.',
-		});
-	}
-
-	const response = await getCompareExpenseChart(userId);
-
-	if (response.status === 'SUCCESS') {
-		return handleResponse({
-			res,
-			data: response.data,
-		});
-	}
-
-	return handleResponse({
-		res,
-		statusCode: 500,
-		err: response.error,
-	});
-});
-const getYearlyMonthlyChartApi = catchAsync(async (req, res) => {
-	logger.info('Inside getYearlyMonthlyChartApi Controller');
+const getMonthChartApi = catchAsync(async (req, res) => {
+	logger.info('Inside getMonthChartApi Controller');
 
 	const { year, month } = req.params;
 	const { userId } = req.user;
@@ -127,7 +97,7 @@ const getYearlyMonthlyChartApi = catchAsync(async (req, res) => {
 			err: 'Month & Year are required.',
 		});
 	}
-	const response = await getYearlyMonthlyChart(userId, year, month);
+	const response = await getMonthChart(userId, year, month);
 
 	if (response.status === 'SUCCESS') {
 		return handleResponse({
@@ -142,76 +112,9 @@ const getYearlyMonthlyChartApi = catchAsync(async (req, res) => {
 		err: response.error,
 	});
 });
-const getYearlyChartApi = catchAsync(async (req, res) => {
-	logger.info('Inside getYearlyChartApi Controller');
 
-	const { year } = req.params;
-	const { userId } = req.user;
-	if (!userId) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'User ID is required.',
-		});
-	}
-	if (!year) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'Year is required.',
-		});
-	}
-	const response = await getYearlyChart(userId, year);
-
-	if (response.status === 'SUCCESS') {
-		return handleResponse({
-			res,
-			data: response.data,
-		});
-	}
-
-	return handleResponse({
-		res,
-		statusCode: 500,
-		err: response.error,
-	});
-});
-const getYearlyExpenseComparisonApi = catchAsync(async (req, res) => {
-	logger.info('Inside getYearlyExpenseComparisonApi Controller');
-
-	const { years } = req.body;
-	const { userId } = req.user;
-	if (!userId) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'User ID is required.',
-		});
-	}
-	if (!Array.isArray(years)) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'Invalid years',
-		});
-	}
-	const response = await getYearlyExpenseComparison(userId, years);
-
-	if (response.status === 'SUCCESS') {
-		return handleResponse({
-			res,
-			data: response.data,
-		});
-	}
-
-	return handleResponse({
-		res,
-		statusCode: 500,
-		err: response.error,
-	});
-});
-const getInsightsApi = catchAsync(async (req, res) => {
-	logger.info('Inside getInsightsApi Controller');
+const getMonthlyInsightsApi = catchAsync(async (req, res) => {
+	logger.info('Inside getMonthlyInsightsApi Controller');
 
 	const { userId } = req.user;
 	if (!userId) {
@@ -222,7 +125,7 @@ const getInsightsApi = catchAsync(async (req, res) => {
 		});
 	}
 
-	const response = await getInsights(userId);
+	const response = await getMonthlyInsights(userId);
 
 	if (response.status === 'SUCCESS') {
 		return handleResponse({
@@ -363,7 +266,6 @@ const getCompareExpenseExpenseDetailApi = catchAsync(async (req, res) => {
 	}
 
 	const response = await getCompareExpenseExpenseDetail(userId, year, months);
-	console.log(response.data);
 	if (response.status === 'SUCCESS') {
 		return handleResponse({
 			res,
@@ -449,11 +351,8 @@ const getTotalSpentTrendApi = catchAsync(async (req, res) => {
 export {
 	addExpenseApi,
 	getExpensesApi,
-	getCompareExpenseChartApi,
-	getYearlyMonthlyChartApi,
-	getYearlyChartApi,
-	getYearlyExpenseComparisonApi,
-	getInsightsApi,
+	getMonthChartApi,
+	getMonthlyInsightsApi,
 	updateExpenseApi,
 	deleteExpenseApi,
 	getCompareExpenseApi,
