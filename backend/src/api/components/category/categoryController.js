@@ -1,7 +1,34 @@
 import logger from '../../config/logger.js';
 import catchAsync from '../../helpers/catchAsync.js';
 import { handleError, handleResponse } from '../../helpers/responseHandler.js';
-import { addCustomCategory, removeCategory } from './categoryService.js';
+import { addCustomCategory, removeCategory, getCategories } from './categoryService.js';
+
+const getCategoriesApi = catchAsync(async (req, res) => {
+	logger.info('Inside getCategoriesApi Controller');
+
+	const { userId } = req.user;
+	if (!userId) {
+		return handleError({
+			res,
+			statusCode: 400,
+			err: 'User ID is required.',
+		});
+	}
+	const response = await getCategories(userId);
+
+	if (response.status === 'SUCCESS') {
+		return handleResponse({
+			res,
+			data: response.data,
+		});
+	}
+
+	return handleError({
+		res,
+		statusCode: 500,
+		err: response.error,
+	});
+});
 
 const addCustomCategoryApi = catchAsync(async (req, res) => {
 	const { categoryName } = req.body;
@@ -68,4 +95,4 @@ const removeCategoryApi = catchAsync(async (req, res) => {
 	});
 });
 
-export { addCustomCategoryApi, removeCategoryApi };
+export { addCustomCategoryApi, removeCategoryApi, getCategoriesApi };

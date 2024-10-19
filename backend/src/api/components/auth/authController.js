@@ -3,7 +3,7 @@ import catchAsync from '../../helpers/catchAsync.js';
 import { generateApiJWT } from '../../helpers/jwtService.js';
 import { handleError, handleResponse } from '../../helpers/responseHandler.js';
 import { validateNewUserInput } from '../../validation/userValidation.js';
-import { createUser, loginUser, addCustomCategory, getCategories } from './authService.js';
+import { createUser, loginUser, addCustomCategory } from './authService.js';
 
 const createUserApi = catchAsync(async (req, res) => {
 	logger.info('Inside createUserApi Controller');
@@ -97,31 +97,4 @@ const addCustomCategoryApi = catchAsync(async (req, res) => {
 	});
 });
 
-const getCategoriesApi = catchAsync(async (req, res) => {
-	logger.info('Inside getCategoriesApi Controller');
-
-	const { userId } = req.user;
-	if (!userId) {
-		return handleError({
-			res,
-			statusCode: 400,
-			err: 'User ID is required.',
-		});
-	}
-	const response = await getCategories(userId);
-
-	if (response.status === 'SUCCESS') {
-		return handleResponse({
-			res,
-			data: response.data,
-		});
-	}
-
-	return handleError({
-		res,
-		statusCode: 500,
-		err: response.error,
-	});
-});
-
-export { createUserApi, loginUserApi, addCustomCategoryApi, getCategoriesApi };
+export { createUserApi, loginUserApi, addCustomCategoryApi };
