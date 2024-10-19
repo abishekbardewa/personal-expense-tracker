@@ -685,18 +685,6 @@ const getCompareExpenseExpenseDetail = async (userId, year, months) => {
 			}),
 		);
 
-		// Prepare the response with monthlyExpenseChart and monthlyExpenseEntries
-
-		const monthlyExpenseChart = monthlyExpenses.map((monthlyData) => ({
-			month: monthlyData.month,
-			chart: monthlyData.chart,
-		}));
-
-		const monthlyExpenseEntries = monthlyExpenses.map((monthlyData) => ({
-			month: monthlyData.month,
-			entries: monthlyData.expensesEntries,
-		}));
-
 		return {
 			status: 'SUCCESS',
 			data: monthlyExpenses,
@@ -714,9 +702,6 @@ const getExpenseCategoryTrend = async (userId, range, category, compareCategory)
 	logger.info('Inside getExpenseCategoryTrend Service');
 	try {
 		const startDate = getStartDate(range);
-
-		console.log(category, compareCategory);
-
 		const primaryCategoryExpenses = await getExpensesByCategory(userId, category, startDate);
 		let compareCategoryExpenses = [];
 		if (compareCategory) {
@@ -734,7 +719,7 @@ const getExpenseCategoryTrend = async (userId, range, category, compareCategory)
 			data: primaryData,
 			backgroundColor: '#fd7f6f',
 			borderColor: '#fd7f6f',
-			borderWidth: 2,
+			borderWidth: 4,
 		};
 
 		const compareDataset = compareCategory
@@ -743,7 +728,7 @@ const getExpenseCategoryTrend = async (userId, range, category, compareCategory)
 					data: compareData,
 					backgroundColor: '#7eb0d5',
 					borderColor: '#7eb0d5',
-					borderWidth: 2,
+					borderWidth: 4,
 			  }
 			: null;
 
@@ -836,21 +821,21 @@ const getTotalSpentTrend = async (userId, range) => {
 					data: Object.values(monthlyData).reverse(), // Reverse to match labels
 					backgroundColor: '#fd7f6f',
 					borderColor: '#fd7f6f',
-					borderWidth: 2,
+					borderWidth: 4,
 				},
 			],
 		};
 
 		// Calculate insights
 		const totalSpent = Object.values(monthlyData).reduce((acc, curr) => acc + curr, 0);
-		const numberOfEntries = Object.keys(monthlyData).length; // Count all months
-		const averageSpent = numberOfEntries ? (totalSpent / numberOfEntries).toFixed(2) : 0;
+		const numberOfMonths = Object.keys(monthlyData).length; // Count all months
+		const averageSpent = numberOfMonths ? (totalSpent / numberOfMonths).toFixed(2) : 0;
 
 		// Determine spending trend
 		let spendingTrend = 'No spending recorded in this period.';
-		if (numberOfEntries > 1) {
+		if (numberOfMonths > 1) {
 			const lastMonthSpent = monthlyData[Object.keys(monthlyData).reverse()[0]];
-			const firstMonthSpent = monthlyData[Object.keys(monthlyData).reverse()[numberOfEntries - 1]];
+			const firstMonthSpent = monthlyData[Object.keys(monthlyData).reverse()[numberOfMonths - 1]];
 			spendingTrend =
 				lastMonthSpent > firstMonthSpent
 					? 'Your spending has increased over the selected period.'
@@ -888,11 +873,11 @@ const getTotalSpentTrend = async (userId, range) => {
 		const insights = {
 			totalSpent,
 			averageSpent,
-			numberOfEntries,
+			numberOfMonths,
 			spendingTrend,
 			topCategories,
 			comparison: `You spent a total of ${formatCurrency(totalSpent)} during this period, averaging ${formatCurrency(averageSpent)} per month.`,
-			suggestions: `Consider reducing your spending in the top categories to save more!`,
+			suggestions: `Consider reducing your spending in the top categories to save more!.`,
 		};
 
 		return {
@@ -936,24 +921,24 @@ const generateInsights = (primaryData, compareData, labels, category, compareCat
 	let totalPrimary = primaryData.reduce((sum, amount) => sum + amount, 0);
 	let totalCompare = compareData.reduce((sum, amount) => sum + amount, 0);
 
-	insights.push(`Total spent on ${category}: ${formatCurrency(totalPrimary)}`);
+	insights.push(`Total spent on ${category}: ${formatCurrency(totalPrimary)}.`);
 	if (compareCategory) {
-		insights.push(`Total spent on ${compareCategory}: ${formatCurrency(totalCompare)}`);
+		insights.push(`Total spent on ${compareCategory}: ${formatCurrency(totalCompare)}.`);
 		if (totalPrimary > totalCompare) {
-			insights.push(`You spent more on ${category} compared to ${compareCategory}`);
+			insights.push(`You spent more on ${category} compared to ${compareCategory}.`);
 		} else if (totalPrimary < totalCompare) {
-			insights.push(`You spent less on ${category} compared to ${compareCategory}`);
+			insights.push(`You spent less on ${category} compared to ${compareCategory}.`);
 		} else {
-			insights.push(`Spending on ${category} and ${compareCategory} was equal`);
+			insights.push(`Spending on ${category} and ${compareCategory} was equal.`);
 		}
 	}
 
 	// Monthly trend insights
 	for (let i = 1; i < primaryData.length; i++) {
 		if (primaryData[i] > primaryData[i - 1]) {
-			insights.push(`In ${labels[i]}, expenses increased compared to ${labels[i - 1]}`);
+			insights.push(`In ${labels[i]}, expenses increased compared to ${labels[i - 1]}.`);
 		} else if (primaryData[i] < primaryData[i - 1]) {
-			insights.push(`In ${labels[i]}, expenses decreased compared to ${labels[i - 1]}`);
+			insights.push(`In ${labels[i]}, expenses decreased compared to ${labels[i - 1]}.`);
 		}
 	}
 

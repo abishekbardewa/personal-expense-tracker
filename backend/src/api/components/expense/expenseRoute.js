@@ -26,15 +26,13 @@ router.use((req, res, next) => {
 
 router.post('/add-expense', checkSignature, addExpenseApi);
 router.get('/get-expense', checkSignature, getExpensesApi);
-// router.get('/monthly-chart', checkSignature, getCompareExpenseChartApi);
-router.post('/compare-expenses', checkSignature, getCompareExpenseApi);
-router.post('/monthly-expense-details', checkSignature, getCompareExpenseExpenseDetailApi);
-router.get('/monthly-chart/:year/:month', checkSignature, getYearlyMonthlyChartApi);
-router.get('/yearly-chart/:year', checkSignature, getYearlyChartApi);
-// router.post('/compare-expenses', checkSignature, getYearlyExpenseComparisonApi);
-router.get('/insights', checkSignature, getInsightsApi);
 router.put('/edit-expense/:expenseId', checkSignature, updateExpenseApi);
 router.delete('/delete-expense/:expenseId', checkSignature, deleteExpenseApi);
+router.post('/monthly-expense-details', checkSignature, getCompareExpenseExpenseDetailApi);
+router.get('/monthly-insights', checkSignature, getInsightsApi);
+router.post('/compare-expenses', checkSignature, getCompareExpenseApi);
+router.get('/monthly-chart/:year/:month', checkSignature, getYearlyMonthlyChartApi);
+router.get('/yearly-chart/:year', checkSignature, getYearlyChartApi);
 router.post('/expense-category-trend', checkSignature, getExpenseCategoryTrendApi);
 router.get('/expense-total-spent-trend', checkSignature, getTotalSpentTrendApi);
 

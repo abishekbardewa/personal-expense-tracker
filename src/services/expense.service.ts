@@ -10,7 +10,7 @@ export const getCurrentMonthChart = async (year: any, month: any) => {
 	return response;
 };
 export const getCurrentMonthInsights = async () => {
-	const response = await axiosPrivate.get(`${API_URL}/insights`);
+	const response = await axiosPrivate.get(`${API_URL}/monthly-insights`);
 	return response;
 };
 

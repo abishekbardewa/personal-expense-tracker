@@ -433,7 +433,6 @@ const getTotalSpentTrendApi = catchAsync(async (req, res) => {
 	}
 
 	const response = await getTotalSpentTrend(userId, range);
-	// console.log(response.data);
 	if (response.status === 'SUCCESS') {
 		return handleResponse({
 			res,

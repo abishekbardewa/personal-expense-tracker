@@ -187,7 +187,7 @@ const TrendPage: React.FC = () => {
 							<ul role="list" className="">
 								{categoryInsights?.map((insight, idx) => (
 									<li key={insight + idx} className="flex justify-between gap-x-6">
-										<p className="text-md   text-gray-500">{insight}</p>
+										<p className="text-md text-gray-500">{insight}</p>
 									</li>
 								))}
 							</ul>
@@ -244,12 +244,12 @@ const TrendPage: React.FC = () => {
 											</div>
 										</li>
 									)}
-									{insights?.numberOfEntries && (
+									{insights?.numberOfMonths && (
 										<li className="col-span-1 flex rounded-md shadow-sm">
 											<div className="flex flex-1 items-center justify-between truncate rounded-md border border-gray-200 bg-white">
 												<div className="flex-1 truncate px-4 py-2 text-sm">
-													<h2 className="font-medium text-gray-900 hover:text-gray-600">Number of entries</h2>
-													<p className="text-gray-500">{insights?.numberOfEntries}</p>
+													<h2 className="font-medium text-gray-900 hover:text-gray-600">Number of months</h2>
+													<p className="text-gray-500">{insights?.numberOfMonths}</p>
 												</div>
 											</div>
 										</li>
@@ -257,7 +257,7 @@ const TrendPage: React.FC = () => {
 								</ul>
 								{insights?.topCategories && insights.topCategories?.length > 0 && (
 									<div>
-										<h2 className="text-medium font-medium text-gray-900 mt-3">Top categories</h2>
+										<h2 className="text-medium font-medium text-gray-900 mt-5">Top categories</h2>
 										<ul role="list" className="mt-1 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
 											{insights.topCategories.map((top) => (
 												<li key={top.totalSpent} className="col-span-1 flex rounded-md shadow-sm">
