@@ -5,7 +5,7 @@ const Layout = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="bg-gradient mx-auto w-full px-4 lg:px-16 pb-20 pt-32 ">
+			<div className="mx-auto w-full px-4 lg:px-16 pb-20 pt-28 ">
 				<Outlet />
 			</div>
 			<Footer />

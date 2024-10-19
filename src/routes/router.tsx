@@ -2,10 +2,10 @@ import { createBrowserRouter } from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
 import Layout from '../layouts/Layout';
 import IntroPage from '../pages/IntroPage';
-import Dashboard from '../pages/Dashboard';
-
 import PrivateRoute from './PrivateRoute';
 import ExpensePage from '../pages/Expense';
+import History from '../pages/History';
+import TrendPage from '../pages/TrendPage';
 
 export const router = createBrowserRouter([
 	{
@@ -17,18 +17,26 @@ export const router = createBrowserRouter([
 		element: <Layout />,
 		children: [
 			{
-				path: 'dashboard',
-				element: (
-					<PrivateRoute>
-						<Dashboard />
-					</PrivateRoute>
-				),
-			},
-			{
 				path: 'overview',
 				element: (
 					<PrivateRoute>
 						<ExpensePage />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'history',
+				element: (
+					<PrivateRoute>
+						<History />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: 'trend',
+				element: (
+					<PrivateRoute>
+						<TrendPage />
 					</PrivateRoute>
 				),
 			},
