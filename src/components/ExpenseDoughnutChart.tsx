@@ -19,7 +19,8 @@ const ExpenseDoughnutChart: React.FC<any> = () => {
 	}, [chartData]);
 
 	if (loading) {
-		return <Loader />;
+		// return <Loader />;
+		return;
 	}
 
 	return (

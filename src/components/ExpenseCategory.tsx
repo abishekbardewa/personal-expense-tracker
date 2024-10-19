@@ -36,7 +36,8 @@ const ExpenseCategory: React.FC = () => {
 	};
 
 	if (loading) {
-		return <Loader />;
+		// return <Loader />;
+		return;
 	}
 
 	return (

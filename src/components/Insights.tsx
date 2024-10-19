@@ -12,7 +12,8 @@ const Insights: React.FC = () => {
 	const [selectedTab, setSelectedTab] = useState<string>('insights');
 
 	if (loading) {
-		return <Loader />;
+		// return <Loader />;
+		return;
 	}
 	return (
 		<div>

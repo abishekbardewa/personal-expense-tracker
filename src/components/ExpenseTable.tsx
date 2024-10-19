@@ -30,7 +30,8 @@ const ExpenseTable: React.FC = () => {
 	};
 
 	if (loading) {
-		return <Loader />;
+		// return <Loader />;
+		return;
 	}
 
 	return (
