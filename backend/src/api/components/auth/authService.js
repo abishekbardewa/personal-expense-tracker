@@ -101,20 +101,4 @@ const addCustomCategory = async (userId, categoryName) => {
 	}
 };
 
-const getCategories = async (userId) => {
-	try {
-		const user = await Users.findById(userId);
-		return {
-			status: 'SUCCESS',
-			data: user.categories,
-		};
-	} catch (error) {
-		console.error(error);
-		return {
-			status: 'ERROR',
-			error: message.SOMETHING_WENT_WRONG,
-		};
-	}
-};
-
-export { createUser, loginUser, addCustomCategory, getCategories };
+export { createUser, loginUser, addCustomCategory };

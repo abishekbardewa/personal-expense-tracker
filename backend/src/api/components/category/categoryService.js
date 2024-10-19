@@ -3,6 +3,22 @@ import message from '../../config/message.js';
 import Users from '../../models/usersModel.js';
 import Expense from '../../models/expenseModal.js';
 
+const getCategories = async (userId) => {
+	try {
+		const user = await Users.findById(userId);
+		return {
+			status: 'SUCCESS',
+			data: user.categories,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			status: 'ERROR',
+			error: message.SOMETHING_WENT_WRONG,
+		};
+	}
+};
+
 const addCustomCategory = async (userId, categoryName) => {
 	try {
 		// Find the user and add the custom category
@@ -58,4 +74,4 @@ const removeCategory = async (userId, categoryName) => {
 	}
 };
 
-export { addCustomCategory, removeCategory };
+export { addCustomCategory, removeCategory, getCategories };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserApi, loginUserApi, addCustomCategoryApi, getCategoriesApi } from './authController.js';
+import { createUserApi, loginUserApi, addCustomCategoryApi } from './authController.js';
 import { checkSignature } from '../../middleware/auth.js';
 
 const router = express.Router();
@@ -13,6 +13,5 @@ router.use((req, res, next) => {
 router.post('/create-account', createUserApi);
 router.post('/login', loginUserApi);
 router.post('/add-custom-category', checkSignature, addCustomCategoryApi);
-router.get('/categories', checkSignature, getCategoriesApi);
 
 export default router;
