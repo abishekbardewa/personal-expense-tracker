@@ -128,7 +128,7 @@ const TrendPage: React.FC = () => {
 			{categoryLoading ? (
 				<Loader />
 			) : (
-				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-4xl mt-8 mb-20">
+				<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-4xl mt-8 mb-20">
 					<div className="col-span-1 flex flex-col gap-4">
 						<Dropdown
 							label="Time range"
