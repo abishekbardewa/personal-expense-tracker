@@ -88,8 +88,8 @@ const History: React.FC = () => {
 						options={months.map((_, idx) => idx + 1)}
 						selectedValue={selectedMonth}
 						onSelect={setSelectedMonth}
-						displayValue={(month) => months[month - 1]}
-						keyExtractor={(month) => months[month - 1]}
+						displayValue={(month) => months[(month as number) - 1]} // Type assertion
+						keyExtractor={(month) => months[(month as number) - 1]}
 					/>
 				</div>
 				<div className="col-span-1 flex flex-col gap-4">
@@ -98,8 +98,8 @@ const History: React.FC = () => {
 						options={months.map((_, idx) => idx + 1)}
 						selectedValue={selectedMonth2}
 						onSelect={setSelectedMonth2}
-						displayValue={(month) => months[month - 1]}
-						keyExtractor={(month) => months[month - 1]}
+						displayValue={(month) => months[(month as number) - 1]} // Type assertion
+						keyExtractor={(month) => months[(month as number) - 1]}
 					/>
 				</div>
 				<div className="col-span-1 flex flex-col gap-4 justify-end">
