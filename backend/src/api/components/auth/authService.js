@@ -4,16 +4,7 @@ import { hashPassword } from '../../helpers/passwordService.js';
 import { generateUserJWT } from '../../helpers/jwtService.js';
 import { comparePassword } from '../../helpers/passwordService.js';
 import Users from '../../models/usersModel.js';
-const predefinedCategories = [
-	{ name: 'Groceries' },
-	{ name: 'Fruits & Vegetables' },
-	{ name: 'Eggs' },
-	{ name: 'Chicken' },
-	{ name: 'Water' },
-	{ name: 'Personal Care' },
-
-	// Add more categories as needed
-];
+import { predefinedCategories } from '../../helpers/utils.js';
 
 const createUser = async (name, email, password) => {
 	logger.info('Inside createUser Service');
