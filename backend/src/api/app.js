@@ -15,8 +15,7 @@ const app = express();
 app.use(express.json());
 
 let corsOptions = {
-	// origin: config.whitelistUrl,
-	origin: '*',
+	origin: config.whitelistUrl,
 };
 
 app.set('trust proxy', config.numberOfProxies);

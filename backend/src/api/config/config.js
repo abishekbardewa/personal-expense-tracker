@@ -8,7 +8,7 @@ export default {
 	numberOfProxies: process.env.NO_OF_PROXY,
 	otpTimeout0InMinutes: 20,
 	fileSizeLimit: '100mb',
-	whitelistUrl: [/\localhost\$/, 'http://localhost:3000', 'http://localhost:4200', 'http://localhost:5173'],
+	whitelistUrl: process.env.ORIGINS.split(','),
 	apiLevelJWTExpiry: '90d',
 	userLevelJWTExpiry: '7d',
 	numberOfFilesUserUpload: 15,
@@ -18,4 +18,5 @@ export default {
 			readPreference: 'primaryPreferred',
 		},
 	},
+	ACCESS_TOKEN_SECRET: process.env.JWT_SECRET,
 };

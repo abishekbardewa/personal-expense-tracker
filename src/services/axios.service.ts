@@ -33,3 +33,16 @@ axiosPrivate.interceptors.request.use(
 		return Promise.reject(error);
 	},
 );
+
+axiosPrivate.interceptors.response.use(
+	(response) => {
+		return response;
+	},
+	(error) => {
+		if (error.response && error.response.status === 401) {
+			localStorage.clear();
+			window.location.href = '/';
+		}
+		return Promise.reject(error);
+	},
+);

@@ -1,29 +1,35 @@
+import config from '../config/config.js';
 import message from '../config/message.js';
-import { verifyJWT } from '../helpers/jwtService.js';
 import { handleError, unAuthorized } from '../helpers/responseHandler.js';
-
-const checkSignature = async (req, res, next) => {
+import jsonwebtoken from 'jsonwebtoken';
+export const checkSignature = (req, res, next) => {
 	try {
-		let token = req.header('Authorization') || req.header('authorization');
+		const authHeader = req.headers.authorization || req.headers.Authorization;
+		if (!authHeader?.startsWith('Bearer ')) {
+			return res.status(400).json({
+				message: 'Token not found',
+				status: 400,
+			});
+		}
+		const token = authHeader.split(' ')[1];
 		if (!token) {
-			return unAuthorized(res);
+			return res.status(400).json({
+				message: 'Token not found',
+				status: 400,
+			});
 		}
 
-		token = req.headers.authorization.replace('Bearer ', '');
-		const payload = await verifyJWT({ token });
-		req.user = payload;
-
-		if (!req.user) {
+		const decodedUser = jsonwebtoken.verify(token, config.ACCESS_TOKEN_SECRET);
+		if (!decodedUser) {
 			return unAuthorized(res);
 		}
-
+		req.user = decodedUser;
 		return next();
 	} catch (error) {
 		return handleError({
 			res,
 			err_msg: message.AUTHORIZATION_ERROR,
+			statusCode: 401,
 		});
 	}
 };
-
-export { checkSignature };
