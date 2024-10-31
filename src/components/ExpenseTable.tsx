@@ -35,8 +35,7 @@ const ExpenseTable: React.FC = () => {
 	};
 
 	if (paginationLoading) {
-		// return <Loader />;
-		return;
+		return <Loader />;
 	}
 
 	return (
