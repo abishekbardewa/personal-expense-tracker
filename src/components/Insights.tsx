@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loader from './common/Loader';
 import { useExpenseContext } from './context/ExpenseProvider';
 import MonthlyInsights from './MonthlyInsights';
@@ -7,6 +7,9 @@ import WarningInsights from './WarningsInsight';
 import TabButton from './common/TabButton';
 
 const Insights: React.FC = () => {
+	useEffect(() => {
+		console.log('Insights loaded');
+	}, []);
 	const { loading } = useExpenseContext();
 
 	const [selectedTab, setSelectedTab] = useState<string>('insights');

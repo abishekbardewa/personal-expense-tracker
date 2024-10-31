@@ -478,8 +478,8 @@ const getCompareExpenseExpenseDetail = async (userId, year, months) => {
 				return {
 					month: monthNames[month - 1],
 					totalAmount,
-
-					expensesEntries,
+					// expenses: expensesEntries,
+					expensesEntries: expenses,
 					chart,
 				};
 			}),
@@ -700,6 +700,50 @@ const getExpensesByCategory = async (userId, category, startDate) => {
 	]);
 };
 
+const getPaginatedExpenses = async (userId, page = 1, limit = 10, year, month) => {
+	logger.info('Inside getPaginatedExpenses Service');
+	try {
+		const startDate = new Date(Date.UTC(year, month - 1, 1));
+		const endDate = new Date(Date.UTC(year, month, 1));
+
+		// Fetch expenses for the user based on the month and year
+		const expenses = await Expense.find({
+			userId: new mongoose.Types.ObjectId(userId),
+			date: {
+				$gte: startDate,
+				$lt: endDate,
+			},
+		})
+			.skip((page - 1) * limit) // Skip records for pagination
+			.limit(limit) // Limit the number of records returned
+			.sort({ date: -1 }); // Sort by date descending
+
+		// Count total number of expenses for the user in the specified month and year
+		const totalExpenses = await Expense.countDocuments({
+			userId: new mongoose.Types.ObjectId(userId),
+			date: {
+				$gte: startDate,
+				$lt: endDate,
+			},
+		});
+		return {
+			status: 'SUCCESS',
+			data: {
+				total: totalExpenses,
+				page,
+				limit,
+				expenses,
+			},
+		};
+	} catch (error) {
+		console.error('Error fetching monthly paginated expenses:', error);
+		return {
+			status: 'ERROR',
+			error: 'Something went wrong while fetching monthly paginated expenses.',
+		};
+	}
+};
+
 export {
 	addExpense,
 	getExpensesByUserId,
@@ -711,4 +755,5 @@ export {
 	getExpenseCategoryTrend,
 	getTotalSpentTrend,
 	getCompareExpenseExpenseDetail,
+	getPaginatedExpenses,
 };

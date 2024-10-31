@@ -7,6 +7,7 @@ import {
 	getCurrentMonthChart,
 	getCurrentMonthInsights,
 	getExpenses,
+	getPaginatedExpense,
 } from '../../services/expense.service';
 import { toast } from 'react-toastify';
 import { addCategory, deleteCategory } from '../../services/category.service';
@@ -17,6 +18,7 @@ export const useExpenseContext = () => useContext(ExpenseContext);
 
 export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => {
 	const [expenses, setExpenses] = useState([]);
+	const [paginatedExpenses, setPaginatedExpense] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [monthlyInsights, setMonthlyInsights] = useState([]);
 	const [overallImprovement, setOverallImprovement] = useState([]);
@@ -26,6 +28,8 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 	const selectedMonth = new Date().getMonth() + 1;
 	const selectedYear = new Date().getFullYear();
 	const [loading, setLoading] = useState(false);
+	const [paginationLoading, setPaginationLoading] = useState(false);
+	const [totalCount, setTotalCount] = useState(0);
 
 	useEffect(() => {
 		fetchExpenses();
@@ -33,6 +37,19 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 		fetchCurrentMonthlInsights();
 	}, []);
 
+	const fetchPaginatedExpenses = async (page: any = 1, limit = 10) => {
+		setPaginationLoading(true);
+		try {
+			const { data: paginatedExpenseResponse } = await getPaginatedExpense(page, limit, selectedYear, selectedMonth);
+			console.log('paginatedExpenseResponse', paginatedExpenseResponse);
+			setPaginatedExpense(paginatedExpenseResponse.data.expenses);
+			setTotalCount(paginatedExpenseResponse.data.total);
+		} catch (error) {
+			toast.error('Failed to fetch paginated expenses');
+		} finally {
+			setPaginationLoading(false);
+		}
+	};
 	const fetchExpenses = async () => {
 		setLoading(true);
 		try {
@@ -122,6 +139,7 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 			fetchExpenses();
 			fetchCurrentMonthlChart();
 			fetchCurrentMonthlInsights();
+			fetchPaginatedExpenses();
 		} catch (error) {
 			toast.error('Failed to add expense');
 		} finally {
@@ -137,6 +155,7 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 			fetchExpenses();
 			fetchCurrentMonthlChart();
 			fetchCurrentMonthlInsights();
+			fetchPaginatedExpenses();
 		} catch (error) {
 			toast.error('Failed to delete expense');
 		} finally {
@@ -153,6 +172,7 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 			fetchExpenses();
 			fetchCurrentMonthlChart();
 			fetchCurrentMonthlInsights();
+			fetchPaginatedExpenses();
 		} catch (error) {
 			toast.error('Failed to update expense');
 		} finally {
@@ -171,11 +191,15 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 				monthlyInsights,
 				overallImprovement,
 				overallWarnings,
+				totalCount,
+				paginatedExpenses,
+				paginationLoading,
 				handleAddCategory,
 				handleDeleteCategory,
 				handleAddExpense,
 				handleDeleteExpense,
 				handleEditExpense,
+				fetchPaginatedExpenses,
 			}}
 		>
 			{children}

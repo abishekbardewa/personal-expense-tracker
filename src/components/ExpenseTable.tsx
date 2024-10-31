@@ -1,19 +1,24 @@
 import { useExpenseContext } from './context/ExpenseProvider';
 import EmptyState from './common/EmptyState';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ConfirmModal from './common/ConfirmModal';
 import { MdOutlineCancel } from 'react-icons/md';
 import EditExpenseModal from './EditExpenseModal';
 import { formatCurrency, formatDate } from '../utils';
 import Loader from './common/Loader';
+import Pagination from './common/Pagination';
 
 const ExpenseTable: React.FC = () => {
-	const { loading, expenses, handleDeleteExpense } = useExpenseContext();
+	const { paginationLoading, expenses, handleDeleteExpense, totalCount, paginatedExpenses, fetchPaginatedExpenses } = useExpenseContext();
 	const [showModal, setShowModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<any>({});
-
+	const [page, setPage] = useState(1);
+	const limit = 10;
+	useEffect(() => {
+		fetchPaginatedExpenses(page, limit);
+	}, [page]);
 	const handleDelete = (record: any) => {
 		setSelectedRecord(record);
 		setShowModal(true);
@@ -29,7 +34,7 @@ const ExpenseTable: React.FC = () => {
 		setShowEditModal(true);
 	};
 
-	if (loading) {
+	if (paginationLoading) {
 		// return <Loader />;
 		return;
 	}
@@ -38,7 +43,7 @@ const ExpenseTable: React.FC = () => {
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Expense Entries</h2>
 			<div className="min-w-full py-2 align-middle sm:px-6 lg:px-8  bg-white rounded-[16px]  md:h-[500px] overflow-y-auto overflow-x-auto">
-				{expenses && expenses.length > 0 ? (
+				{paginatedExpenses && paginatedExpenses.length > 0 ? (
 					<table className="min-w-full divide-y divide-gray-300">
 						<thead>
 							<tr>
@@ -57,7 +62,7 @@ const ExpenseTable: React.FC = () => {
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200 bg-white">
-							{expenses.map((expense, idx) => (
+							{paginatedExpenses.map((expense, idx) => (
 								<tr key={`${expense.category}-${idx}`}>
 									<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
 										{expense.category}
@@ -84,6 +89,9 @@ const ExpenseTable: React.FC = () => {
 					<EmptyState title="No expenses recorded yet." subtitle="Start adding your expenses to monitor your financial activity." />
 				)}
 			</div>
+			<div className="mt-5">
+				<Pagination totalCount={totalCount} page={page} limit={limit} onPageChange={setPage} pageClass={'justify-end'} />
+			</div>
 
 			{showModal && (
 				<ConfirmModal
@@ -94,8 +102,8 @@ const ExpenseTable: React.FC = () => {
 					cancelText="No, Keep Record"
 					onConfirm={handleConfirm}
 					onCancel={() => setShowModal(false)}
-					confirmDisabled={loading}
-					cancelDisabled={loading}
+					confirmDisabled={paginationLoading}
+					cancelDisabled={paginationLoading}
 					btnClass={'text-white bg-error-600 hover:bg-error-800 focus:ring-error-300 border-error-600'}
 					icon={<MdOutlineCancel className="w-10 h-10 text-error-600" />}
 				/>

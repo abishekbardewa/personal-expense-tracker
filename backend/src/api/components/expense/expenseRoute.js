@@ -11,6 +11,7 @@ import {
 	getExpenseCategoryTrendApi,
 	getTotalSpentTrendApi,
 	getCompareExpenseExpenseDetailApi,
+	getPaginatedExpensesApi,
 } from './expenseController.js';
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.use((req, res, next) => {
 
 router.post('/add-expense', checkSignature, addExpenseApi);
 router.get('/get-expense', checkSignature, getExpensesApi);
+router.get('/get-paginated-expense', checkSignature, getPaginatedExpensesApi);
 router.put('/edit-expense/:expenseId', checkSignature, updateExpenseApi);
 router.delete('/delete-expense/:expenseId', checkSignature, deleteExpenseApi);
 router.post('/monthly-expense-details', checkSignature, getCompareExpenseExpenseDetailApi);

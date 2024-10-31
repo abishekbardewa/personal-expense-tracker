@@ -5,6 +5,10 @@ export const getExpenses = async (year: any, month: any) => {
 	const response = await axiosPrivate.get(`${API_URL}/get-expense?year=${year}&month=${month}`);
 	return response;
 };
+export const getPaginatedExpense = async (page: any = 1, limit: any = 10, year: any, month: any) => {
+	const response = await axiosPrivate.get(`${API_URL}/get-paginated-expense?year=${year}&month=${month}&page=${page}&limit=${limit}`);
+	return response;
+};
 export const getCurrentMonthChart = async (year: any, month: any) => {
 	const response = await axiosPrivate.get(`${API_URL}/month-chart/${year}/${month}`);
 	return response;

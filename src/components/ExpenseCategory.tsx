@@ -56,7 +56,7 @@ const ExpenseCategory: React.FC = () => {
 					New category
 				</Button>
 			</div>
-			<ul role="list" className=" md:h-[500px] overflow-y-auto scrollbar-hidden">
+			<ul role="list" className="h-[500px] overflow-y-auto scrollbar-hidden">
 				{categories.map((data) => (
 					<li key={data.category?._id} className=" flex justify-between gap-x-6 py-3 hover:bg-gray-50 ">
 						<div className="flex min-w-0 gap-x-4">

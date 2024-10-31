@@ -12,6 +12,7 @@ import {
 	getExpenseCategoryTrend,
 	getTotalSpentTrend,
 	getCompareExpenseExpenseDetail,
+	getPaginatedExpenses,
 } from './expenseService.js';
 
 const addExpenseApi = catchAsync(async (req, res) => {
@@ -348,6 +349,47 @@ const getTotalSpentTrendApi = catchAsync(async (req, res) => {
 		err: response.error,
 	});
 });
+
+const getPaginatedExpensesApi = catchAsync(async (req, res) => {
+	logger.info('Inside getPaginatedExpensesApi Controller');
+	const { page, limit, year, month } = req.query;
+	const { userId } = req.user;
+	if (!userId) {
+		return handleError({
+			res,
+			statusCode: 400,
+			err: 'User ID is required.',
+		});
+	}
+	if (!year || !month) {
+		return handleError({
+			res,
+			statusCode: 400,
+			err: 'Month & Year are required.',
+		});
+	}
+	if (!page || !limit) {
+		return handleError({
+			res,
+			statusCode: 400,
+			err: 'Page & Limit are required.',
+		});
+	}
+	const response = await getPaginatedExpenses(userId, page, limit, year, month);
+
+	if (response.status === 'SUCCESS') {
+		return handleResponse({
+			res,
+			data: response.data,
+		});
+	}
+
+	return handleError({
+		res,
+		statusCode: 500,
+		err: response.error,
+	});
+});
 export {
 	addExpenseApi,
 	getExpensesApi,
@@ -359,4 +401,5 @@ export {
 	getExpenseCategoryTrendApi,
 	getTotalSpentTrendApi,
 	getCompareExpenseExpenseDetailApi,
+	getPaginatedExpensesApi,
 };

@@ -20,7 +20,6 @@ const History: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const isCompareDisabled = selectedMonth === selectedMonth2;
 
-	// Save selected states to localStorage when they change
 	useEffect(() => {
 		localStorage.setItem('selectedYear', selectedYear.toString());
 	}, [selectedYear]);
@@ -33,10 +32,9 @@ const History: React.FC = () => {
 		localStorage.setItem('selectedMonth2', selectedMonth2.toString());
 	}, [selectedMonth2]);
 
-	// Retrieve data on component mount
 	useEffect(() => {
 		getData();
-	}, []); // Adjust this dependency if needed
+	}, []);
 
 	const getData = async () => {
 		if (isCompareDisabled) {
@@ -46,7 +44,6 @@ const History: React.FC = () => {
 		setLoading(true);
 
 		try {
-			// Fetch comparison and monthly expense data
 			const { data } = await axiosPrivate.post('/expense/compare-expenses', {
 				year: selectedYear,
 				months: [selectedMonth, selectedMonth2],
@@ -56,7 +53,6 @@ const History: React.FC = () => {
 				months: [selectedMonth, selectedMonth2],
 			});
 
-			// Set state with retrieved data
 			setMonthlyExpense(monthlyExpenseDetails.data);
 			const { comparisonChart, totalSpentChart, insights } = data.data;
 			setComparisonData(comparisonChart);
@@ -88,7 +84,7 @@ const History: React.FC = () => {
 						options={months.map((_, idx) => idx + 1)}
 						selectedValue={selectedMonth}
 						onSelect={setSelectedMonth}
-						displayValue={(month) => months[(month as number) - 1]} // Type assertion
+						displayValue={(month) => months[(month as number) - 1]}
 						keyExtractor={(month) => months[(month as number) - 1]}
 					/>
 				</div>
@@ -98,7 +94,7 @@ const History: React.FC = () => {
 						options={months.map((_, idx) => idx + 1)}
 						selectedValue={selectedMonth2}
 						onSelect={setSelectedMonth2}
-						displayValue={(month) => months[(month as number) - 1]} // Type assertion
+						displayValue={(month) => months[(month as number) - 1]}
 						keyExtractor={(month) => months[(month as number) - 1]}
 					/>
 				</div>
@@ -251,15 +247,16 @@ const History: React.FC = () => {
 															</thead>
 															<tbody className="divide-y divide-gray-200 bg-white">
 																{expDetails.expensesEntries.map((entry, idx) => (
-																	<tr key={`${entry.category}-${idx}`}>
+																	<tr key={`${entry?._id}-${idx}`}>
 																		<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-																			{entry.category}
-																			{entry.entries[0].description && (
-																				<p className="mt-1   text-xs leading-5 text-gray-500">{entry.entries[0].description}</p>
-																			)}
+																			{entry?.category}
+																			{entry?.description && <p className="mt-1   text-xs leading-5 text-gray-500">{entry?.description}</p>}
 																		</td>
-																		<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatDate(entry.entries[0].date)}</td>
-																		<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatCurrency(entry.entries[0].amount)}</td>
+																		<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+																			{formatDate(entry.date)}
+																			{/* {entry?.date} */}
+																		</td>
+																		<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatCurrency(entry?.amount)}</td>
 																	</tr>
 																))}
 															</tbody>
