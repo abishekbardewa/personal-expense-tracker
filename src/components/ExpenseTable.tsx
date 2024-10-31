@@ -10,7 +10,7 @@ import Loader from './common/Loader';
 import Pagination from './common/Pagination';
 
 const ExpenseTable: React.FC = () => {
-	const { paginationLoading, expenses, handleDeleteExpense, totalCount, paginatedExpenses, fetchPaginatedExpenses } = useExpenseContext();
+	const { loading, paginationLoading, expenses, handleDeleteExpense, totalCount, paginatedExpenses, fetchPaginatedExpenses } = useExpenseContext();
 	const [showModal, setShowModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<any>({});
@@ -34,9 +34,10 @@ const ExpenseTable: React.FC = () => {
 		setShowEditModal(true);
 	};
 
-	// if (paginationLoading) {
-	// 	return <Loader />;
-	// }
+	if (loading) {
+		return;
+		// return <Loader />;
+	}
 
 	return (
 		<div>

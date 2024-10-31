@@ -32,8 +32,8 @@ export const getMonthYear = (date) => {
 	return { month, year };
 };
 export const getMonthRange = (year, month) => {
-	const start = new Date(year, month - 1, 1);
-	const end = new Date(year, month, 0);
+	const start = new Date(Date.UTC(year, month - 1, 1));
+	const end = new Date(Date.UTC(year, month, 1));
 	return { start, end };
 };
 export const getStartDate = (range) => {

@@ -708,15 +708,14 @@ const getExpensesByCategory = async (userId, category, startDate) => {
 const getPaginatedExpenses = async (userId, page = 1, limit = 10, year, month) => {
 	logger.info('Inside getPaginatedExpenses Service');
 	try {
-		const startDate = new Date(Date.UTC(year, month - 1, 1));
-		const endDate = new Date(Date.UTC(year, month, 1));
+		const { start, end } = getMonthRange(year, month);
 
 		// Fetch expenses for the user based on the month and year
 		const expenses = await Expense.find({
 			userId: new mongoose.Types.ObjectId(userId),
 			date: {
-				$gte: startDate,
-				$lt: endDate,
+				$gte: start,
+				$lt: end,
 			},
 		})
 			.skip((page - 1) * limit) // Skip records for pagination
@@ -727,8 +726,8 @@ const getPaginatedExpenses = async (userId, page = 1, limit = 10, year, month) =
 		const totalExpenses = await Expense.countDocuments({
 			userId: new mongoose.Types.ObjectId(userId),
 			date: {
-				$gte: startDate,
-				$lt: endDate,
+				$gte: start,
+				$lt: end,
 			},
 		});
 		return {
