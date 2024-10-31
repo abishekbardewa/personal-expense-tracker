@@ -226,15 +226,15 @@ const History: React.FC = () => {
 
 											<div>
 												<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">{expDetails.month} Entries</h2>
-												<div className="min-w-full py-2 align-middle sm:px-6 lg:px-8  rounded-[16px] bg-white md:h-[500px] overflow-y-auto overflow-x-auto">
+												<div className="min-w-full align-middle  rounded-[16px] bg-white h-[500px] overflow-y-auto overflow-x-auto scrollbar-hidden">
 													{expDetails.expensesEntries && expDetails.expensesEntries.length > 0 ? (
 														<table className="min-w-full divide-y divide-gray-300">
-															<thead>
+															<thead className="bg-gray-100">
 																<tr>
-																	<th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+																	<th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
 																		Category
 																	</th>
-																	<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+																	<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
 																		Added date
 																	</th>
 																	<th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -248,7 +248,7 @@ const History: React.FC = () => {
 															<tbody className="divide-y divide-gray-200 bg-white">
 																{expDetails.expensesEntries.map((entry, idx) => (
 																	<tr key={`${entry?._id}-${idx}`}>
-																		<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+																		<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
 																			{entry?.category}
 																			{entry?.description && <p className="mt-1   text-xs leading-5 text-gray-500">{entry?.description}</p>}
 																		</td>
