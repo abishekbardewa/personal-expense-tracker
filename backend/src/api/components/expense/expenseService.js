@@ -59,6 +59,7 @@ const getExpensesByUserId = async (userId, year, month) => {
 			const categoryExpensesData = expenses.filter((expense) => expense.category === category.name);
 
 			const categoryTotal = categoryExpensesData.reduce((sum, expense) => sum + expense.amount, 0);
+			const percentage = totalSpent > 0 ? (categoryTotal / totalSpent) * 100 : 0;
 
 			const spentDates = categoryExpensesData.map((expense) => expense.date);
 			const latestCreatedAt = categoryExpensesData.length ? categoryExpensesData[0].createdAt : null;
@@ -66,6 +67,8 @@ const getExpensesByUserId = async (userId, year, month) => {
 			return {
 				category,
 				totalAmount: categoryTotal || 0,
+				percentage: parseFloat(percentage.toFixed(2)), // Limit to 2 decimal places
+
 				spentDates: spentDates.length ? spentDates : [],
 				latestCreatedAt,
 			};

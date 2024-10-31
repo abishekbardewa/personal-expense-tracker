@@ -34,15 +34,17 @@ const ExpenseTable: React.FC = () => {
 		setShowEditModal(true);
 	};
 
-	if (paginationLoading) {
-		return <Loader />;
-	}
+	// if (paginationLoading) {
+	// 	return <Loader />;
+	// }
 
 	return (
 		<div>
 			<h2 className="text-2xl font-semibold leading-6 text-gray-900 mb-5">Expense Entries</h2>
 			<div className="min-w-full py-2 align-middle sm:px-6 lg:px-8  bg-white rounded-[16px]  md:h-[500px] overflow-y-auto overflow-x-auto">
-				{paginatedExpenses && paginatedExpenses.length > 0 ? (
+				{paginationLoading ? (
+					<Loader />
+				) : paginatedExpenses && paginatedExpenses.length > 0 ? (
 					<table className="min-w-full divide-y divide-gray-300">
 						<thead>
 							<tr>
