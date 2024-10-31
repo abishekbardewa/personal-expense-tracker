@@ -420,7 +420,9 @@ const getCompareExpenseExpenseDetail = async (userId, year, months) => {
 				const expenses = await Expense.find({
 					userId: new mongoose.Types.ObjectId(userId),
 					date: { $gte: start, $lt: end },
-				}).exec();
+				})
+					.sort({ date: -1 })
+					.exec();
 
 				if (expenses.length === 0) {
 					return {
