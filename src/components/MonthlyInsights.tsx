@@ -12,9 +12,9 @@ const MonthlyInsights: React.FC = () => {
 						<li key={`${ele}-${idx}`} className="flex justify-between gap-x-6 pb-3">
 							<div className="flex min-w-0 gap-x-4">
 								<div className="min-w-0 flex-auto">
-									<p className="text-md font-semibold  text-gray-900">{ele.category}</p>
+									{/* <p className="text-md font-semibold  text-gray-900">{ele.category}</p> */}
 
-									<p className="mt-1 text-sm  text-gray-500">{ele.message}</p>
+									<p className="mt-1 text-sm  text-gray-500">{ele}</p>
 								</div>
 							</div>
 						</li>

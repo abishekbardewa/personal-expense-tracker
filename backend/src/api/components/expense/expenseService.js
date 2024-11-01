@@ -67,7 +67,7 @@ const getExpensesByUserId = async (userId, year, month) => {
 			return {
 				category,
 				totalAmount: categoryTotal || 0,
-				percentage: parseFloat(percentage.toFixed(2)), // Limit to 2 decimal places
+				percentage: parseFloat(percentage.toFixed(2)),
 
 				spentDates: spentDates.length ? spentDates : [],
 				latestCreatedAt,
@@ -178,98 +178,123 @@ const getMonthlyInsights = async (userId) => {
 		let overallImprovement = [];
 		let overallWarnings = [];
 
-		const expenses = await Expense.find({ userId: userId });
+		const [expenses, user] = await Promise.all([Expense.find({ userId: userId }), Users.findById(userId).select('categories')]);
 
 		if (expenses.length === 0) {
 			return {
 				status: 'SUCCESS',
-				data: { monthlyInsights, overallImprovement, overallWarnings },
+				data: {
+					monthlyInsights: [
+						'Welcome to your monthly insights!',
+						'Track your expenses, and we’ll start showing trends and insights over time.',
+						'Tip: Try categorizing expenses to gain better insights in future months.',
+					],
+					overallImprovement: ['Insights on improvements will be available once we have spending data to compare.'],
+					overallWarnings: ['We will provide feedback if your spending significantly increases after we gather more data.'],
+				},
 			};
 		}
 
-		// Group expenses by category and month
 		const categoryData = {};
+		const predefinedCategories = new Set(['Groceries', 'Fruits & Vegetables']);
+		let totalSpent = 0;
+		const currentMonth = currentDate.getMonth();
+
 		expenses.forEach((expense) => {
-			const { month, year } = getMonthYear(expense.date);
+			const { month } = getMonthYear(expense.date);
 			const category = expense.category;
 
 			if (!categoryData[category]) {
 				categoryData[category] = {
 					monthlyAmounts: Array(12).fill(0),
-					lastThreeMonths: Array(3).fill(0),
-					weekendSpending: 0,
-					weekdaySpending: 0,
+					entries: 0,
+					monthsUsed: new Set(),
 				};
 			}
 
-			// Update monthly amounts
 			categoryData[category].monthlyAmounts[month] += expense.amount;
+			categoryData[category].entries += 1;
+			categoryData[category].monthsUsed.add(month);
+			totalSpent += expense.amount;
+		});
 
-			// Track weekend vs weekday spending
-			const dayOfWeek = new Date(expense.date).getDay();
-			if (dayOfWeek === 0 || dayOfWeek === 6) {
-				categoryData[category].weekendSpending += expense.amount;
+		const newCategories = user.categories.filter((category) => {
+			const isAddedThisMonth = expenses.some((expense) => expense.category === category && new Date(expense.date).getMonth() === currentMonth);
+			return isAddedThisMonth && !predefinedCategories.has(category);
+		});
+
+		newCategories.forEach((category) => {
+			const currentMonthAmount = categoryData[category]?.monthlyAmounts[currentMonth] || 0;
+			if (currentMonthAmount > 0) {
+				monthlyInsights.push(`New category added this month: ${category} with ₹${currentMonthAmount} spent`);
 			} else {
-				categoryData[category].weekdaySpending += expense.amount;
+				monthlyInsights.push(`New category added this month: ${category}`);
 			}
 		});
 
-		// Analyze each category
+		let topSpentCategory = null;
+		let leastSpentCategory = null;
+		let maxEntriesCategory = null;
+		let minEntriesCategory = null;
+
 		Object.entries(categoryData).forEach(([category, data]) => {
-			const currentMonth = currentDate.getMonth();
 			const currentMonthAmount = data.monthlyAmounts[currentMonth] || 0;
-			const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-			const previousMonthAmount = data.monthlyAmounts[previousMonth] || 0;
+			const entries = data.entries;
 
-			// Calculate trends and patterns
-			if (previousMonthAmount > 0) {
-				const percentageChange = (((currentMonthAmount - previousMonthAmount) / previousMonthAmount) * 100).toFixed(1);
+			if (!topSpentCategory || currentMonthAmount > topSpentCategory.amount) {
+				topSpentCategory = { category, amount: currentMonthAmount };
+			}
 
-				// Monthly Insights
-				let message = '';
-				if (currentMonthAmount !== previousMonthAmount) {
-					message = `${Math.abs(percentageChange)}% ${
-						currentMonthAmount > previousMonthAmount ? 'over' : 'under'
-					} last month (₹${currentMonthAmount} vs ₹${previousMonthAmount})`;
-				} else {
-					message = `Consistent with last month at ₹${currentMonthAmount}`;
-				}
+			if ((!leastSpentCategory || (currentMonthAmount < leastSpentCategory.amount && currentMonthAmount > 0)) && currentMonthAmount > 0) {
+				leastSpentCategory = { category, amount: currentMonthAmount };
+			}
 
-				// Check weekend vs weekday spending patterns
-				const weekendRatio = data.weekendSpending / (data.weekendSpending + data.weekdaySpending);
-				if (weekendRatio > 0.6) {
-					// If more than 60% spending on weekends
-					message += `. High weekend spending: ${(weekendRatio * 100).toFixed(0)}% of total`;
-				}
+			if (!maxEntriesCategory || entries > maxEntriesCategory.count) {
+				maxEntriesCategory = { category, count: entries };
+			}
 
-				monthlyInsights.push({ category, message });
-
-				// Improvements
-				if (currentMonthAmount < previousMonthAmount) {
-					const savedAmount = previousMonthAmount - currentMonthAmount;
-					const pattern = detectSpendingPattern(category, data.monthlyAmounts);
-					overallImprovement.push(`${category}: ₹${savedAmount} saved${pattern ? ` (${pattern})` : ''}`);
-				}
-
-				// Warnings
-				if (currentMonthAmount > previousMonthAmount) {
-					const monthsAboveAverage = checkConsecutiveHighSpending(data.monthlyAmounts, currentMonth);
-					if (monthsAboveAverage > 1) {
-						overallWarnings.push(
-							`${category}: ${monthsAboveAverage}${getOrdinalSuffix(monthsAboveAverage)} consecutive month over budget (₹${
-								currentMonthAmount - previousMonthAmount
-							} excess)`,
-						);
-					}
-				}
-			} else if (currentMonthAmount > 0) {
-				// First time expense in this category
-				monthlyInsights.push({
-					category,
-					message: `${category}: First time expense of ₹${currentMonthAmount}`,
-				});
+			if (!minEntriesCategory || (entries < minEntriesCategory.count && entries > 0)) {
+				minEntriesCategory = { category, count: entries };
 			}
 		});
+
+		if (topSpentCategory) {
+			monthlyInsights.push(`Top category: ${topSpentCategory.category} spent ${formatCurrency(topSpentCategory.amount)}`);
+		}
+		if (leastSpentCategory && leastSpentCategory.category !== topSpentCategory.category) {
+			monthlyInsights.push(`Least spent on: ${leastSpentCategory.category} with ${formatCurrency(leastSpentCategory.amount)}`);
+		}
+		if (maxEntriesCategory) {
+			monthlyInsights.push(`${maxEntriesCategory.category} has the highest entries with ${maxEntriesCategory.count} records`);
+		}
+		if (minEntriesCategory && minEntriesCategory.category !== maxEntriesCategory.category) {
+			monthlyInsights.push(`${minEntriesCategory.category} has the lowest entries with ${minEntriesCategory.count} records`);
+		}
+		monthlyInsights.push(`Total spent this month: ${formatCurrency(totalSpent)}`);
+
+		let hasPreviousData = false;
+		Object.entries(categoryData).forEach(([category, data]) => {
+			const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+			const currentMonthAmount = data.monthlyAmounts[currentMonth];
+			const previousMonthAmount = data.monthlyAmounts[previousMonth];
+
+			if (previousMonthAmount > 0) hasPreviousData = true;
+
+			if (currentMonthAmount < previousMonthAmount && previousMonthAmount > 0) {
+				const savedAmount = previousMonthAmount - currentMonthAmount;
+				overallImprovement.push(`You saved ${formatCurrency(savedAmount)} in ${category} compared to last month.`);
+			}
+
+			if (currentMonthAmount > previousMonthAmount && previousMonthAmount > 0) {
+				const increasedAmount = currentMonthAmount - previousMonthAmount;
+				overallWarnings.push(`Spending in ${category} increased by ${formatCurrency(increasedAmount)} this month.`);
+			}
+		});
+
+		if (!hasPreviousData) {
+			overallImprovement = ['Insights on improvements will be available once we have spending data to compare.'];
+			overallWarnings = ['We will provide feedback if your spending significantly increases after we gather more data.'];
+		}
 
 		return {
 			status: 'SUCCESS',
@@ -280,39 +305,12 @@ const getMonthlyInsights = async (userId) => {
 			},
 		};
 	} catch (error) {
-		console.error('Error fetching yearly expense comparison:', error);
+		console.error('Error fetching monthly insights:', error);
 		return {
 			status: 'ERROR',
-			error: 'Something went wrong while fetching yearly expense comparison.',
+			error: 'Something went wrong while fetching monthly insights.',
 		};
 	}
-};
-
-// Helper function to detect spending patterns
-const detectSpendingPattern = (category, monthlyAmounts) => {
-	// Add your pattern detection logic here
-	// Example: Check if savings are due to fewer transactions, bulk purchases, etc.
-	return ''; // Return pattern description or empty string
-};
-
-// Helper function to check consecutive months of high spending
-const checkConsecutiveHighSpending = (monthlyAmounts, currentMonth) => {
-	let consecutiveMonths = 1;
-	let month = currentMonth;
-	const average = monthlyAmounts.reduce((sum, amount) => sum + amount, 0) / 12;
-
-	while (month > 0 && monthlyAmounts[month - 1] > average) {
-		consecutiveMonths++;
-		month--;
-	}
-	return consecutiveMonths;
-};
-
-// Helper function to add ordinal suffix to numbers
-const getOrdinalSuffix = (number) => {
-	const suffixes = ['th', 'st', 'nd', 'rd'];
-	const v = number % 100;
-	return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
 };
 
 const updateExpense = async (expenseId, expenseData) => {
@@ -542,7 +540,7 @@ const getCompareExpenseExpenseDetail = async (userId, year, months) => {
 				return {
 					month: monthNames[month - 1],
 					totalAmount,
-					// expenses: expensesEntries,
+
 					expensesEntries: expenses,
 					chart,
 				};
@@ -769,7 +767,6 @@ const getPaginatedExpenses = async (userId, page = 1, limit = 10, year, month) =
 	try {
 		const { start, end } = getMonthRange(year, month);
 
-		// Fetch expenses for the user based on the month and year
 		const expenses = await Expense.find({
 			userId: new mongoose.Types.ObjectId(userId),
 			date: {
@@ -777,11 +774,10 @@ const getPaginatedExpenses = async (userId, page = 1, limit = 10, year, month) =
 				$lt: end,
 			},
 		})
-			.skip((page - 1) * limit) // Skip records for pagination
-			.limit(limit) // Limit the number of records returned
-			.sort({ date: -1 }); // Sort by date descending
+			.skip((page - 1) * limit)
+			.limit(limit)
+			.sort({ date: -1 });
 
-		// Count total number of expenses for the user in the specified month and year
 		const totalExpenses = await Expense.countDocuments({
 			userId: new mongoose.Types.ObjectId(userId),
 			date: {
