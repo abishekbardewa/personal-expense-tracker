@@ -48,7 +48,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLoginSuccess, onRegi
 
 		setLoading(true);
 		setProgress(0);
-		let interval: NodeJS.Timeout;
+		let interval: any;
 		try {
 			interval = setInterval(() => {
 				setProgress((prev) => {
