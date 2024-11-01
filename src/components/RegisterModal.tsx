@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Button from './common/Button';
 import { validateEmail, validatePassword } from '../utils';
 import InputField from './common/InputField';
+import ProgressBar from './common/ProgressBar';
 
 interface RegisterModalProps {
 	onClose: () => void;
@@ -17,7 +18,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState<{ name?: string; email?: string; password?: string }>({});
-
+	const [progress, setProgress] = useState<number>(0);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const handleRegister = async () => {
 		setError({});
 		const newError: { name?: string; email?: string; password?: string } = {};
@@ -42,7 +44,18 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 			return;
 		}
 		setLoading(true);
+		setProgress(0);
+		let interval: NodeJS.Timeout;
 		try {
+			interval = setInterval(() => {
+				setProgress((prev) => {
+					if (prev >= 90) {
+						clearInterval(interval);
+						return 100;
+					}
+					return prev + 10;
+				});
+			}, 100);
 			const { data } = await registerUser(name, email, password);
 			if (data.result) {
 				toast.success('User registered successfully');
@@ -54,6 +67,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 			toast.error(error.response.data.msg);
 		} finally {
 			setLoading(false);
+			clearInterval(interval);
+			setProgress(100);
 		}
 	};
 
@@ -79,9 +94,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 		onLoginSuccess(true);
 	};
 
+	const toggleShowPassword = () => {
+		setShowPassword((prev) => !prev);
+	};
+
 	return (
 		<div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex justify-center items-center">
-			<div className="bg-white p-8 rounded shadow-lg w-96">
+			<div className="relative overflow-hidden bg-white p-8 rounded shadow-lg w-96">
+				{loading && <ProgressBar progress={progress} />}
 				<h2 className="text-xl font-semibold ">Create Your Account</h2>
 				<p className="mt-1 mb-4 text-sm text-gray-500">Join to start tracking your spending today!</p>
 				<form onSubmit={handleSubmit} noValidate>
@@ -113,13 +133,20 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ onClose, onRegisterSucces
 						label="Password"
 						id="password"
 						name="password"
-						type="password"
+						type={showPassword ? 'text' : 'password'}
 						placeholder="password"
 						required={true}
 						value={password}
 						error={error.password}
 						onChange={handlePasswordChange}
 					/>
+
+					<div className="flex items-center mb-4 mt-[-8px]">
+						<input type="checkbox" id="show-password" checked={showPassword} onChange={toggleShowPassword} className="mr-2" />
+						<label htmlFor="show-password" className="text-sm text-gray-700">
+							Show password
+						</label>
+					</div>
 
 					<Button
 						buttonType="button"
