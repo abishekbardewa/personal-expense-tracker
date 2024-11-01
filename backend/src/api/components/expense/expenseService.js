@@ -177,6 +177,7 @@ const getMonthlyInsights = async (userId) => {
 		const monthlyInsights = [];
 		let overallImprovement = [];
 		let overallWarnings = [];
+
 		const expenses = await Expense.find({ userId: userId });
 
 		if (expenses.length === 0) {
@@ -186,65 +187,96 @@ const getMonthlyInsights = async (userId) => {
 			};
 		}
 
+		// Group expenses by category and month
+		const categoryData = {};
 		expenses.forEach((expense) => {
 			const { month, year } = getMonthYear(expense.date);
 			const category = expense.category;
 
-			const monthIndex = monthlyInsights.findIndex((insight) => insight.category === category && insight.year === year);
-			if (monthIndex === -1) {
-				monthlyInsights.push({
-					category: category,
-					year: year,
-					months: Array(12).fill(0),
-					messages: [],
-				});
+			if (!categoryData[category]) {
+				categoryData[category] = {
+					monthlyAmounts: Array(12).fill(0),
+					lastThreeMonths: Array(3).fill(0),
+					weekendSpending: 0,
+					weekdaySpending: 0,
+				};
 			}
 
-			monthlyInsights.find((insight) => insight.category === category && insight.year === year).months[month] += expense.amount;
+			// Update monthly amounts
+			categoryData[category].monthlyAmounts[month] += expense.amount;
+
+			// Track weekend vs weekday spending
+			const dayOfWeek = new Date(expense.date).getDay();
+			if (dayOfWeek === 0 || dayOfWeek === 6) {
+				categoryData[category].weekendSpending += expense.amount;
+			} else {
+				categoryData[category].weekdaySpending += expense.amount;
+			}
 		});
 
-		const currentMonthInsights = [];
-
-		monthlyInsights.forEach((insight) => {
-			const category = insight.category;
+		// Analyze each category
+		Object.entries(categoryData).forEach(([category, data]) => {
 			const currentMonth = currentDate.getMonth();
-
-			const currentMonthAmount = insight.months[currentMonth] || 0;
-
+			const currentMonthAmount = data.monthlyAmounts[currentMonth] || 0;
 			const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-			const previousMonthAmount = insight.months[previousMonth] || 0;
+			const previousMonthAmount = data.monthlyAmounts[previousMonth] || 0;
 
-			const hasPreviousData = insight.months.some((amount, index) => index !== currentMonth && amount > 0);
+			// Calculate trends and patterns
+			if (previousMonthAmount > 0) {
+				const percentageChange = (((currentMonthAmount - previousMonthAmount) / previousMonthAmount) * 100).toFixed(1);
 
-			const message =
-				currentMonthAmount > 0 && previousMonthAmount === 0 && !hasPreviousData
-					? `First time spending on ${category}: ₹${currentMonthAmount}. Keep tracking!`
-					: currentMonthAmount > previousMonthAmount
-					? `You spent ₹${currentMonthAmount - previousMonthAmount} more on ${category} than last month. Review your budget.`
-					: currentMonthAmount < previousMonthAmount
-					? `You spent ₹${previousMonthAmount - currentMonthAmount} less on ${category} than last month. Great job!`
-					: `Your spending on ${category} is the same as last month.`;
+				// Monthly Insights
+				let message = '';
+				if (currentMonthAmount !== previousMonthAmount) {
+					message = `${Math.abs(percentageChange)}% ${
+						currentMonthAmount > previousMonthAmount ? 'over' : 'under'
+					} last month (₹${currentMonthAmount} vs ₹${previousMonthAmount})`;
+				} else {
+					message = `Consistent with last month at ₹${currentMonthAmount}`;
+				}
 
-			currentMonthInsights.push({
-				category: category,
-				currentMonthAmount,
-				previousMonthAmount,
-				message,
-			});
+				// Check weekend vs weekday spending patterns
+				const weekendRatio = data.weekendSpending / (data.weekendSpending + data.weekdaySpending);
+				if (weekendRatio > 0.6) {
+					// If more than 60% spending on weekends
+					message += `. High weekend spending: ${(weekendRatio * 100).toFixed(0)}% of total`;
+				}
 
-			if (currentMonthAmount > previousMonthAmount) {
-				overallImprovement.push(message);
-			} else if (currentMonthAmount < previousMonthAmount) {
-				overallWarnings.push(message);
+				monthlyInsights.push({ category, message });
+
+				// Improvements
+				if (currentMonthAmount < previousMonthAmount) {
+					const savedAmount = previousMonthAmount - currentMonthAmount;
+					const pattern = detectSpendingPattern(category, data.monthlyAmounts);
+					overallImprovement.push(`${category}: ₹${savedAmount} saved${pattern ? ` (${pattern})` : ''}`);
+				}
+
+				// Warnings
+				if (currentMonthAmount > previousMonthAmount) {
+					const monthsAboveAverage = checkConsecutiveHighSpending(data.monthlyAmounts, currentMonth);
+					if (monthsAboveAverage > 1) {
+						overallWarnings.push(
+							`${category}: ${monthsAboveAverage}${getOrdinalSuffix(monthsAboveAverage)} consecutive month over budget (₹${
+								currentMonthAmount - previousMonthAmount
+							} excess)`,
+						);
+					}
+				}
+			} else if (currentMonthAmount > 0) {
+				// First time expense in this category
+				monthlyInsights.push({
+					category,
+					message: `${category}: First time expense of ₹${currentMonthAmount}`,
+				});
 			}
 		});
 
 		return {
 			status: 'SUCCESS',
 			data: {
+				monthlyInsights,
 				overallImprovement,
 				overallWarnings,
-				monthlyInsights: currentMonthInsights,
 			},
 		};
 	} catch (error) {
@@ -254,6 +286,33 @@ const getMonthlyInsights = async (userId) => {
 			error: 'Something went wrong while fetching yearly expense comparison.',
 		};
 	}
+};
+
+// Helper function to detect spending patterns
+const detectSpendingPattern = (category, monthlyAmounts) => {
+	// Add your pattern detection logic here
+	// Example: Check if savings are due to fewer transactions, bulk purchases, etc.
+	return ''; // Return pattern description or empty string
+};
+
+// Helper function to check consecutive months of high spending
+const checkConsecutiveHighSpending = (monthlyAmounts, currentMonth) => {
+	let consecutiveMonths = 1;
+	let month = currentMonth;
+	const average = monthlyAmounts.reduce((sum, amount) => sum + amount, 0) / 12;
+
+	while (month > 0 && monthlyAmounts[month - 1] > average) {
+		consecutiveMonths++;
+		month--;
+	}
+	return consecutiveMonths;
+};
+
+// Helper function to add ordinal suffix to numbers
+const getOrdinalSuffix = (number) => {
+	const suffixes = ['th', 'st', 'nd', 'rd'];
+	const v = number % 100;
+	return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
 };
 
 const updateExpense = async (expenseId, expenseData) => {
