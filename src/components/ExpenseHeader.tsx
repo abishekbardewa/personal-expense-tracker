@@ -4,15 +4,24 @@ import { useExpenseContext } from './context/ExpenseProvider';
 
 const ExpenseHeader: React.FC = () => {
 	const { loading, totalAmount } = useExpenseContext();
+	const currentDate = new Date().toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: '2-digit',
+	});
 
 	return (
-		<div className="flex flex-col items-center justify-center gap-3">
+		<div className=" flex  items-center justify-center gap-8">
 			{loading ? (
 				<LuLoader2 className="w-6 h-6 text-primary animate-spin" />
 			) : (
 				<>
-					<p className="text-md text-gray-500">Total spent</p>
-					<h2 className="mt text-3xl font-semibold leading-7  sm:truncate md:text-4xl sm:tracking-tight">{formatCurrency(totalAmount)}</h2>
+					<div className="flex flex-col items-start justify-center">
+						<p className="text-md font-semibold leading-6 text-gray-900">Total spent</p>
+						<p className="text-sm text-gray-400">{currentDate}</p>
+					</div>
+
+					<h2 className="mt text-3xl font-semibold leading-7   md:text-4xl sm:tracking-tight">{formatCurrency(totalAmount)}</h2>
 				</>
 			)}
 		</div>
