@@ -174,11 +174,15 @@ const getMonthlyInsights = async (userId) => {
 	logger.info('Inside  getMonthlyInsights Service');
 	try {
 		const currentDate = new Date();
+		const currentMonth = currentDate.getMonth();
 		const monthlyInsights = [];
 		let overallImprovement = [];
 		let overallWarnings = [];
 
-		const [expenses, user] = await Promise.all([Expense.find({ userId: userId }), Users.findById(userId).select('categories')]);
+		const [expenses, user] = await Promise.all([
+			Expense.find({ userId: userId, date: { $gte: new Date(currentDate.getFullYear(), currentMonth, 1) } }),
+			Users.findById(userId).select('categories'),
+		]);
 
 		if (expenses.length === 0) {
 			return {
@@ -186,7 +190,7 @@ const getMonthlyInsights = async (userId) => {
 				data: {
 					monthlyInsights: [
 						'Welcome to your monthly insights!',
-						'Track your expenses, and we’ll start showing trends and insights over time.',
+						'Track your expenses, and we will start showing trends and insights over time.',
 						'Tip: Try categorizing expenses to gain better insights in future months.',
 					],
 					overallImprovement: ['Insights on improvements will be available once we have spending data to compare.'],
@@ -198,8 +202,26 @@ const getMonthlyInsights = async (userId) => {
 		const categoryData = {};
 		const predefinedCategories = new Set(['Groceries', 'Fruits & Vegetables']);
 		let totalSpent = 0;
-		const currentMonth = currentDate.getMonth();
 
+		// Get previous month's expenses for comparison
+		const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+		const previousMonthYear = currentMonth === 0 ? currentDate.getFullYear() - 1 : currentDate.getFullYear();
+		const previousMonthExpenses = await Expense.find({
+			userId: userId,
+			date: {
+				$gte: new Date(previousMonthYear, previousMonth, 1),
+				$lt: new Date(currentDate.getFullYear(), currentMonth, 1),
+			},
+		});
+
+		// Get month names for messages
+		const getMonthName = (month) => {
+			return new Date(2000, month, 1).toLocaleString('default', { month: 'long' });
+		};
+		const currentMonthName = getMonthName(currentMonth);
+		const previousMonthName = getMonthName(previousMonth);
+
+		// Process current month expenses
 		expenses.forEach((expense) => {
 			const { month } = getMonthYear(expense.date);
 			const category = expense.category;
@@ -218,20 +240,40 @@ const getMonthlyInsights = async (userId) => {
 			totalSpent += expense.amount;
 		});
 
-		const newCategories = user.categories.filter((category) => {
-			const isAddedThisMonth = expenses.some((expense) => expense.category === category && new Date(expense.date).getMonth() === currentMonth);
-			return isAddedThisMonth && !predefinedCategories.has(category);
-		});
+		// Process previous month expenses
+		previousMonthExpenses.forEach((expense) => {
+			const { month } = getMonthYear(expense.date);
+			const category = expense.category;
 
-		newCategories.forEach((category) => {
-			const currentMonthAmount = categoryData[category]?.monthlyAmounts[currentMonth] || 0;
-			if (currentMonthAmount > 0) {
-				monthlyInsights.push(`New category added this month: ${category} with ₹${currentMonthAmount} spent`);
-			} else {
-				monthlyInsights.push(`New category added this month: ${category}`);
+			if (!categoryData[category]) {
+				categoryData[category] = {
+					monthlyAmounts: Array(12).fill(0),
+					entries: 0,
+					monthsUsed: new Set(),
+				};
 			}
+
+			categoryData[category].monthlyAmounts[month] += expense.amount;
 		});
 
+		// Find truly new categories (created this month and used)
+		console.log(user.categories);
+		const newCategories = user.categories.filter((category) => {
+			if (!category.createdAt) {
+				return false;
+			}
+			// Check if category was created this month
+			const categoryCreatedAt = category.createdAt;
+			const isCreatedThisMonth =
+				categoryCreatedAt && categoryCreatedAt.getMonth() === currentMonth && categoryCreatedAt.getFullYear() === currentDate.getFullYear();
+
+			// Check if it's not a predefined category
+			const isNotPredefined = !predefinedCategories.has(category.name || category);
+
+			return isCreatedThisMonth && isNotPredefined;
+		});
+
+		// Calculate top/least spent and entries categories
 		let topSpentCategory = null;
 		let leastSpentCategory = null;
 		let maxEntriesCategory = null;
@@ -258,40 +300,66 @@ const getMonthlyInsights = async (userId) => {
 			}
 		});
 
-		if (topSpentCategory) {
-			monthlyInsights.push(`Top category: ${topSpentCategory.category} spent ${formatCurrency(topSpentCategory.amount)}`);
-		}
-		if (leastSpentCategory && leastSpentCategory.category !== topSpentCategory.category) {
-			monthlyInsights.push(`Least spent on: ${leastSpentCategory.category} with ${formatCurrency(leastSpentCategory.amount)}`);
-		}
-		if (maxEntriesCategory) {
-			monthlyInsights.push(`${maxEntriesCategory.category} has the highest entries with ${maxEntriesCategory.count} records`);
-		}
-		if (minEntriesCategory && minEntriesCategory.category !== maxEntriesCategory.category) {
-			monthlyInsights.push(`${minEntriesCategory.category} has the lowest entries with ${minEntriesCategory.count} records`);
-		}
-		monthlyInsights.push(`Total spent this month: ${formatCurrency(totalSpent)}`);
+		// Add all monthly insights in order
+		monthlyInsights.push(`Total spent in ${currentMonthName}: ${formatCurrency(totalSpent)}`);
 
-		let hasPreviousData = false;
-		Object.entries(categoryData).forEach(([category, data]) => {
-			const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-			const currentMonthAmount = data.monthlyAmounts[currentMonth];
-			const previousMonthAmount = data.monthlyAmounts[previousMonth];
-
-			if (previousMonthAmount > 0) hasPreviousData = true;
-
-			if (currentMonthAmount < previousMonthAmount && previousMonthAmount > 0) {
-				const savedAmount = previousMonthAmount - currentMonthAmount;
-				overallImprovement.push(`You saved ${formatCurrency(savedAmount)} in ${category} compared to last month.`);
-			}
-
-			if (currentMonthAmount > previousMonthAmount && previousMonthAmount > 0) {
-				const increasedAmount = currentMonthAmount - previousMonthAmount;
-				overallWarnings.push(`Spending in ${category} increased by ${formatCurrency(increasedAmount)} this month.`);
+		// Add insights for new categories
+		newCategories.forEach((category) => {
+			const categoryName = category.name || category;
+			const currentMonthAmount = categoryData[categoryName]?.monthlyAmounts[currentMonth] || 0;
+			if (currentMonthAmount > 0) {
+				monthlyInsights.push(`New category added this month: ${categoryName} with ${formatCurrency(currentMonthAmount)} spent`);
+			} else {
+				monthlyInsights.push(`New category added this month: ${categoryName}`);
 			}
 		});
 
-		if (!hasPreviousData) {
+		// Add top spending insights
+		if (topSpentCategory) {
+			monthlyInsights.push(`Highest spend: ${topSpentCategory.category} at ${formatCurrency(topSpentCategory.amount)}`);
+		}
+
+		if (leastSpentCategory && leastSpentCategory.category !== topSpentCategory?.category) {
+			monthlyInsights.push(`Lowest spend: ${leastSpentCategory.category} at ${formatCurrency(leastSpentCategory.amount)}`);
+		}
+
+		// Add entry count insights
+		if (maxEntriesCategory) {
+			monthlyInsights.push(`Most frequent category: ${maxEntriesCategory.category} with ${maxEntriesCategory.count} transactions`);
+		}
+
+		if (minEntriesCategory && minEntriesCategory.category !== maxEntriesCategory?.category) {
+			monthlyInsights.push(`Least frequent category: ${minEntriesCategory.category} with ${minEntriesCategory.count} transactions`);
+		}
+
+		// Calculate improvements and warnings with detailed messages
+		Object.entries(categoryData).forEach(([category, data]) => {
+			const currentMonthAmount = data.monthlyAmounts[currentMonth] || 0;
+			const previousMonthAmount = data.monthlyAmounts[previousMonth] || 0;
+
+			if (previousMonthAmount > 0 || currentMonthAmount > 0) {
+				if (currentMonthAmount < previousMonthAmount) {
+					const savedAmount = previousMonthAmount - currentMonthAmount;
+					const percentageDecrease = ((savedAmount / previousMonthAmount) * 100).toFixed(1);
+					overallImprovement.push(
+						`${category}: Saved ${formatCurrency(savedAmount)} (${percentageDecrease}% decrease) from ${formatCurrency(
+							previousMonthAmount,
+						)} in ${previousMonthName} to ${formatCurrency(currentMonthAmount)} in ${currentMonthName}`,
+					);
+				} else if (currentMonthAmount > previousMonthAmount) {
+					const increasedAmount = currentMonthAmount - previousMonthAmount;
+					const percentageIncrease = ((increasedAmount / previousMonthAmount) * 100).toFixed(1);
+					overallWarnings.push(
+						`${category}: Increased by ${formatCurrency(increasedAmount)} (${percentageIncrease}% increase) from ${formatCurrency(
+							previousMonthAmount,
+						)} in ${previousMonthName} to ${formatCurrency(currentMonthAmount)} in ${currentMonthName}`,
+					);
+				}
+			}
+		});
+
+		// Set default messages if no comparison data
+		if (previousMonthExpenses.length === 0) {
 			overallImprovement = ['Insights on improvements will be available once we have spending data to compare.'];
 			overallWarnings = ['We will provide feedback if your spending significantly increases after we gather more data.'];
 		}
