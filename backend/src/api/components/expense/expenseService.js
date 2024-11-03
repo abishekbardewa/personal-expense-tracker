@@ -256,8 +256,6 @@ const getMonthlyInsights = async (userId) => {
 			categoryData[category].monthlyAmounts[month] += expense.amount;
 		});
 
-		// Find truly new categories (created this month and used)
-		console.log(user.categories);
 		const newCategories = user.categories.filter((category) => {
 			if (!category.createdAt) {
 				return false;
