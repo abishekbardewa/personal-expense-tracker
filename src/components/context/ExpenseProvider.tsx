@@ -25,6 +25,12 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 	const [overallWarnings, setOverallWarnings] = useState([]);
 	const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 	const [totalAmount, setTotalAmount] = useState(0);
+	const [totalAmountToday, setTotalAmountToday] = useState(0);
+	const [newCategory, setNewCategory] = useState([]);
+	const [topSpentCategory, setTopSpentCategory] = useState([]);
+	const [LowestSpentCategory, setLowestSpentCategory] = useState([]);
+	const [mostFrequent, setMostFrequent] = useState([]);
+	const [leastFrequent, setLeastFrequent] = useState([]);
 	const selectedMonth = new Date().getMonth() + 1;
 	const selectedYear = new Date().getFullYear();
 	const [loading, setLoading] = useState(false);
@@ -58,6 +64,14 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 			setExpenses(expenseResponse.data.expenses);
 			setCategories(expenseResponse.data.categoryExpenses);
 			setTotalAmount(expenseResponse.data.totalSpent);
+			setTotalAmountToday(expenseResponse.data.totalSpentToday);
+
+			setTopSpentCategory(expenseResponse.data.highestSpentCategories);
+			setLowestSpentCategory(expenseResponse.data.lowestSpentCategories);
+			setNewCategory(expenseResponse.data.newlyAddedCategories);
+
+			setMostFrequent(expenseResponse.data.categoryWithHighestTransaction);
+			setLeastFrequent(expenseResponse.data.categoryWithLowestTransaction);
 		} catch (error) {
 			toast.error('Failed to fetch expenses');
 		} finally {
@@ -188,6 +202,12 @@ export const ExpenseProvider = ({ children }: { children: React.ReactNode }) => 
 				categories,
 				chartData,
 				totalAmount,
+				totalAmountToday,
+				newCategory,
+				topSpentCategory,
+				LowestSpentCategory,
+				mostFrequent,
+				leastFrequent,
 				monthlyInsights,
 				overallImprovement,
 				overallWarnings,

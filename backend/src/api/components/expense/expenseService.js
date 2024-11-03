@@ -44,23 +44,34 @@ const getExpensesByUserId = async (userId, year, month) => {
 	try {
 		const startDate = new Date(Date.UTC(year, month - 1, 1));
 		const endDate = new Date(Date.UTC(year, month, 1));
+		const today = new Date();
+		const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
+		// Fetch user categories
 		const user = await Users.findById(userId).select('categories');
 		const userCategories = user.categories || [];
 
+		// Fetch expenses within the specified date range
 		const expenses = await Expense.find({
 			userId,
 			date: { $gte: startDate, $lt: endDate },
 		}).sort({ createdAt: -1 });
 
-		const totalSpent = expenses.reduce((total, expense) => total + expense.amount, 0);
+		// Calculate total spent within the month
+		const totalSpent = parseFloat(expenses.reduce((total, expense) => total + expense.amount, 0).toFixed(2));
 
+		// Calculate total spent today
+		const totalSpentToday = parseFloat(
+			expenses
+				.filter((expense) => expense.date >= startOfToday)
+				.reduce((total, expense) => total + expense.amount, 0)
+				.toFixed(2),
+		);
+		// Process each category's expenses
 		const categoryExpenses = userCategories.map((category) => {
 			const categoryExpensesData = expenses.filter((expense) => expense.category === category.name);
-
 			const categoryTotal = categoryExpensesData.reduce((sum, expense) => sum + expense.amount, 0);
 			const percentage = totalSpent > 0 ? (categoryTotal / totalSpent) * 100 : 0;
-
 			const spentDates = categoryExpensesData.map((expense) => expense.date);
 			const latestCreatedAt = categoryExpensesData.length ? categoryExpensesData[0].createdAt : null;
 
@@ -68,11 +79,80 @@ const getExpensesByUserId = async (userId, year, month) => {
 				category,
 				totalAmount: categoryTotal || 0,
 				percentage: parseFloat(percentage.toFixed(2)),
-
 				spentDates: spentDates.length ? spentDates : [],
 				latestCreatedAt,
+				transactionCount: categoryExpensesData.length,
 			};
 		});
+
+		// Sort categories by amount spent to identify highest and lowest spending categories
+		const sortedCategories = categoryExpenses.sort((a, b) => b.totalAmount - a.totalAmount);
+
+		let highestSpentCategory = null;
+		let lowestSpentCategory = null;
+
+		// Process to find the highest spent category
+		for (const cat of sortedCategories) {
+			// Find the highest spent category that has a totalAmount greater than 0
+			if (!highestSpentCategory && cat.totalAmount > 0) {
+				highestSpentCategory = { name: cat.category.name, amount: cat.totalAmount };
+			}
+		}
+
+		// Process to find the lowest spent category
+		for (const cat of sortedCategories) {
+			// Ensure that we are looking for the lowest category that is not the same as highestSpentCategory
+			if (!lowestSpentCategory && cat.totalAmount > 0 && highestSpentCategory && cat.category.name !== highestSpentCategory.name) {
+				lowestSpentCategory = { name: cat.category.name, amount: cat.totalAmount };
+			} else if (lowestSpentCategory && cat.totalAmount > 0 && cat.category.name !== highestSpentCategory.name) {
+				// Compare to find the lowest
+				if (cat.totalAmount < lowestSpentCategory.amount) {
+					lowestSpentCategory = { name: cat.category.name, amount: cat.totalAmount };
+				}
+			}
+		}
+
+		// Prepare the final highest and lowest categories arrays
+		const highestSpentCategories = highestSpentCategory ? [`${highestSpentCategory.name} ${formatCurrency(highestSpentCategory.amount)}`] : [];
+		const lowestSpentCategories = lowestSpentCategory ? [`${lowestSpentCategory.name} ${formatCurrency(lowestSpentCategory.amount)}`] : [];
+
+		const predefinedCategories = ['Groceries', 'Fruits & Vegetables'];
+
+		// Get newly added categories this month, excluding predefined categories
+		const newlyAddedCategories = userCategories
+			.filter(
+				(category) => category.createdAt >= startDate && category.createdAt < endDate && !predefinedCategories.includes(category.name), // Exclude predefined categories
+			)
+			.map((category) => {
+				const initialExpense = expenses.find((expense) => expense.category === category.name);
+				return initialExpense ? `${category.name} ${formatCurrency(initialExpense.amount)}` : category.name;
+			});
+
+		// Find categories with the highest and lowest transactions
+		const categoryWithHighestTransaction = categoryExpenses.reduce(
+			(max, cat) => (cat.transactionCount > max.transactionCount ? cat : max),
+			categoryExpenses[0],
+		);
+		const categoryWithLowestTransaction = categoryExpenses.reduce(
+			(min, cat) => (cat.transactionCount < min.transactionCount ? cat : min),
+			categoryExpenses[0],
+		);
+
+		// Format category with highest transaction as a properly formatted string
+		const categoryWithHighestTransactionString = [
+			`${categoryWithHighestTransaction.category.name} with ${categoryWithHighestTransaction.transactionCount} transaction${
+				categoryWithHighestTransaction.transactionCount > 1 ? 's' : ''
+			}`,
+		];
+
+		// Format category with lowest transaction as a properly formatted string
+		const categoryWithLowestTransactionString = [
+			`${categoryWithLowestTransaction.category.name} with ${categoryWithLowestTransaction.transactionCount} transaction${
+				categoryWithLowestTransaction.transactionCount > 1 ? 's' : ''
+			}`,
+		];
+
+		// Sort categories by latest transaction for display order
 		categoryExpenses.sort((a, b) => {
 			if (a.latestCreatedAt && b.latestCreatedAt) {
 				return new Date(b.latestCreatedAt) - new Date(a.latestCreatedAt);
@@ -84,12 +164,20 @@ const getExpensesByUserId = async (userId, year, month) => {
 				return 0;
 			}
 		});
+
+		// Return the complete data structure
 		return {
 			status: 'SUCCESS',
 			data: {
 				categoryExpenses,
 				totalSpent,
 				expenses,
+				totalSpentToday,
+				highestSpentCategories,
+				lowestSpentCategories,
+				newlyAddedCategories,
+				categoryWithHighestTransaction: categoryWithHighestTransactionString,
+				categoryWithLowestTransaction: categoryWithLowestTransactionString,
 			},
 		};
 	} catch (error) {
